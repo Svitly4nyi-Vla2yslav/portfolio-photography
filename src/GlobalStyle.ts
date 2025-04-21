@@ -5,6 +5,12 @@ import { css } from '@emotion/react';
 
 export const GlobalStyle = css`
 
+:root {
+  --font-family: "Geist", sans-serif;
+  --second-family: "JetBrains Mono", sans-serif;
+  --third-family: "Geist Mono", sans-serif;
+}
+
   * {
     margin: 0;
     padding: 0;

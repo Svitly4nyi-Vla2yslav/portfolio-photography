@@ -10,14 +10,14 @@ import { useMediaQuery } from 'react-responsive';
 import { MobileMenu } from '../MobileMenu/MobileMenu';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { useTranslation } from 'react-i18next';
+import LogoIcon from '../../../public/logo-portfolio.svg';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 3000 });
-    AOS.refresh(); 
+    AOS.refresh();
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -26,13 +26,14 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isMobile = useMediaQuery({ query: '(max-width: 425px)' });
-  const { t } = useTranslation();
-  
+  const isMobile = useMediaQuery({ query: '(max-width: 773px)' });
+
   return (
-    <NavbarContainer $isScrolled={isScrolled}> {/* Changed to $isScrolled */}
-      <Logo to="/">
-        {/* <img src={LogoIcon} alt="Logo" /> */}
+    <NavbarContainer $isScrolled={isScrolled}>
+      {' '}
+      {/* Changed to $isScrolled */}
+      <Logo to="/home">
+        <img src={LogoIcon} alt="Logo" />
       </Logo>
       <NavList>
         {isMobile ? (
@@ -40,13 +41,22 @@ const Header: React.FC = () => {
         ) : (
           <>
             <NavItem>
-              <StyledNavLink to="/home">{t("home")}</StyledNavLink>
+              <StyledNavLink to="/home">WELCOME</StyledNavLink>
             </NavItem>
             <NavItem>
-              <StyledNavLink to="/about">{t("about")}</StyledNavLink>
-            </NavItem>
+              <StyledNavLink to="/work">WORK</StyledNavLink>
+            </NavItem>{' '}
             <NavItem>
-              <StyledNavLink to="/contact">{t("contact")}</StyledNavLink>
+              <StyledNavLink to="/photo">PHOTOGRAPHY</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/info">INFO</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/contact">CONTACTS</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/about">ABOUT ME</StyledNavLink>
             </NavItem>
           </>
         )}

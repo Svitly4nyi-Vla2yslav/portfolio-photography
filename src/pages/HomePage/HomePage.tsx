@@ -3,12 +3,11 @@ import {
   HomeContainer,
   HomeTitel,
   HomeWrapperDetails,
-  SpanTitel,
 } from './HomePage.styled';
 import Preloader from '../../components/Preloader/Preloader';
 // import Partners from '../../components/SlidePartners/Partners';
 import React from 'react';
-import { Trans } from 'react-i18next';
+import { NavItem, StyledNavLink } from '../../components/Header/Header.styled';
 // import VideoBackground from '../../components/VideoBackground/VideoBackground';
 
 const Home: React.FC = () => {
@@ -22,22 +21,32 @@ const Home: React.FC = () => {
     <>
       <HomeContainer>
         <HomeTitel>
-          <Trans
-            i18nKey="home_title"
-            components={{ highlight1: <SpanTitel /> }}
-          />
           <HomeWrapperDetails data-aos="zoom-out-down">
-          </HomeWrapperDetails>{' '}
+            {/* <NavItem>
+              <StyledNavLink to="/home">WELCOME</StyledNavLink>
+            </NavItem> */}
+            <NavItem>
+              <StyledNavLink to="/work">WORK</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/photo">PHOTOGRAPHY</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/info">INFO</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/contact">CONTACTS</StyledNavLink>
+            </NavItem>{' '}
+            <NavItem>
+              <StyledNavLink to="/about">ABOUT ME</StyledNavLink>
+            </NavItem>
+          </HomeWrapperDetails>
         </HomeTitel>
 
         {/* <VideoBackground /> */}
         {!isLoaded && <Preloader onComplete={handlePreloaderComplete} />}
-        {isLoaded && (
-          <>
-          </>
-        )}
+        {isLoaded && <></>}
       </HomeContainer>
-      {/* <Partners /> */}
     </>
   );
 };
