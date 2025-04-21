@@ -11,7 +11,6 @@ import { MobileMenu } from '../MobileMenu/MobileMenu';
 import LogoIcon from "../../assets/icons/logo-seto_logistic.png"
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
@@ -34,7 +33,6 @@ const Header: React.FC = () => {
     <NavbarContainer isScrolled={isScrolled}>
     <Logo to="/"><img src={LogoIcon} alt="Logo" /></Logo>
     <NavList>
-      <LanguageSwitcher />
       {isMobile ? (
         <MobileMenu />
       ) : (
