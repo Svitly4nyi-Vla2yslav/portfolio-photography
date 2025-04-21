@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const FooterContainer = styled.footer<{ isScrolled: boolean }>`
- background: ${({ isScrolled }) =>
-    isScrolled ? 'transparent' : 'rgba(28, 28, 28, 0.7)'};
-  box-shadow: ${({ isScrolled }) =>
-    isScrolled ? 'none'  : '0 4px 15px rgba(0, 0, 0, 0.4)'};
+export const FooterContainer = styled.footer<{ $isScrolled: boolean }>`
+ background: ${({ $isScrolled }) =>
+    $isScrolled ? 'transparent' : 'rgba(28, 28, 28, 0.7)'};
+  box-shadow: ${({ $isScrolled }) =>
+    $isScrolled ? 'none'  : '0 4px 15px rgba(0, 0, 0, 0.4)'};
 left: 50%;
 text-align: center;
 padding: 1rem 1rem;

@@ -1,40 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import logo from "../../assets/icons/logo-seto_logistic.png";
+import VideoLogo from "../../assets/video/logo.mp4";
 
-// Анімація обертання (rotate)
-const rotateAnimation = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
-// Анімація зникнення вправо
-const slideOutToRight = keyframes`
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100vw);
-    opacity: 0;
-  }
-`;
-
-// Анімація зникнення Preloader
+// Анімації
 const fadeOutAnimation = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+  from { opacity: 1; }
+  to { opacity: 0; }
 `;
 
-// Styled-component для контейнера Preloader
+const zoomInPulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+`;
+
+const hitEffect = keyframes`
+  0% { transform: scale(1); }
+  10% { transform: scale(1.3); }
+  20% { transform: scale(0.9); }
+  30% { transform: scale(1.1); }
+  40% { transform: scale(1); }
+  100% { transform: scale(1); }
+`;
+
+// Styled components
 const PreloaderContainer = styled.div<{ $fadeOut: boolean }>`
   display: flex;
   justify-content: center;
@@ -44,7 +33,7 @@ const PreloaderContainer = styled.div<{ $fadeOut: boolean }>`
   left: 0;
   width: 100%;
   height: 100%;
-  background: #0f2027;
+  background:rgb(24, 24, 24);
   z-index: 9999;
 
   ${({ $fadeOut }) =>
@@ -54,53 +43,61 @@ const PreloaderContainer = styled.div<{ $fadeOut: boolean }>`
     `}
 `;
 
-// Styled-component для логотипу
-const Logo = styled.img<{ $animate: boolean; $slideOut: boolean }>`
-  width: 200px;
-  height: auto;
+const VideoContainer = styled.div<{ $playVideo: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  max-height: 100%;
 
-  ${({ $animate }) =>
-    $animate &&
+  ${({ $playVideo }) =>
+    $playVideo &&
     css`
-      animation: ${rotateAnimation} 2s linear;
+      animation: ${hitEffect} 0.5s linear, ${zoomInPulse} 1s 0.5s linear;
     `}
+`;
 
-  ${({ $slideOut }) =>
-    $slideOut &&
-    css`
-      animation: ${slideOutToRight} 1s forwards;
-    `}
+const Video = styled.video`
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
 `;
 
 const Preloader = ({ onComplete }: { onComplete: () => void }) => {
   const [fadeOut, setFadeOut] = useState(false);
-  const [animate, setAnimate] = useState(false);
-  const [slideOut, setSlideOut] = useState(false);
+  const [playVideo, setPlayVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Запускаємо обертання
-    setAnimate(true);
+    // Запускаємо ефект удару та відео відразу
+    setPlayVideo(true);
+    if (videoRef.current) {
+      videoRef.current.play().catch(e => console.error("Video play error:", e));
+    }
 
-    // Зупиняємо обертання через 2 секунди
-    const stopAnimationTimer = setTimeout(() => {
-      setAnimate(false);
+    // Ховаємо Preloader через 3 секунди після запуску
+    const timer = setTimeout(() => {
+      setFadeOut(true);
+      setTimeout(onComplete, 1000); // Завершення Preloader
+    }, 4000);
 
-      // Починаємо "виїзд" вправо через 0.5 секунди після зупинки
-      setTimeout(() => setSlideOut(true), 500);
-
-      // Ховаємо Preloader через 1.5 секунди після "виїзду"
-      setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(onComplete, 1000); // Завершення Preloader
-      }, 1500);
-    }, 2000);
-
-    return () => clearTimeout(stopAnimationTimer);
+    return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <PreloaderContainer $fadeOut={fadeOut}>
-      <Logo src={logo} alt="Company Logo" $animate={animate} $slideOut={slideOut} />
+      <VideoContainer $playVideo={playVideo}>
+        <Video 
+          ref={videoRef}
+          muted 
+          loop={false}
+          preload="auto"
+        >
+          <source src={VideoLogo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </Video>
+      </VideoContainer>
     </PreloaderContainer>
   );
 };

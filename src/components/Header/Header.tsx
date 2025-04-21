@@ -8,7 +8,6 @@ import {
 } from './Header.styled';
 import { useMediaQuery } from 'react-responsive';
 import { MobileMenu } from '../MobileMenu/MobileMenu';
-import LogoIcon from "../../assets/icons/logo-seto_logistic.png"
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useTranslation } from 'react-i18next';
@@ -29,27 +28,30 @@ const Header: React.FC = () => {
 
   const isMobile = useMediaQuery({ query: '(max-width: 425px)' });
   const { t } = useTranslation();
+  
   return (
-    <NavbarContainer isScrolled={isScrolled}>
-    <Logo to="/"><img src={LogoIcon} alt="Logo" /></Logo>
-    <NavList>
-      {isMobile ? (
-        <MobileMenu />
-      ) : (
-        <>
-             <NavItem>
-          <StyledNavLink to="/home">{t("home")}</StyledNavLink>
-        </NavItem>
-        <NavItem>
-          <StyledNavLink to="/about">{t("about")}</StyledNavLink>
-        </NavItem>
-        <NavItem>
-          <StyledNavLink to="/contact">{t("contact")}</StyledNavLink>
-        </NavItem>
-        </>
-      )}
-    </NavList>
-  </NavbarContainer>
+    <NavbarContainer $isScrolled={isScrolled}> {/* Changed to $isScrolled */}
+      <Logo to="/">
+        {/* <img src={LogoIcon} alt="Logo" /> */}
+      </Logo>
+      <NavList>
+        {isMobile ? (
+          <MobileMenu />
+        ) : (
+          <>
+            <NavItem>
+              <StyledNavLink to="/home">{t("home")}</StyledNavLink>
+            </NavItem>
+            <NavItem>
+              <StyledNavLink to="/about">{t("about")}</StyledNavLink>
+            </NavItem>
+            <NavItem>
+              <StyledNavLink to="/contact">{t("contact")}</StyledNavLink>
+            </NavItem>
+          </>
+        )}
+      </NavList>
+    </NavbarContainer>
   );
 };
 

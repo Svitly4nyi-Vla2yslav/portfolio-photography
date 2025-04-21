@@ -6,7 +6,7 @@ import {
   SpanTitel,
 } from './HomePage.styled';
 import Preloader from '../../components/Preloader/Preloader';
-import Partners from '../../components/SlidePartners/Partners';
+// import Partners from '../../components/SlidePartners/Partners';
 import React from 'react';
 import { Trans } from 'react-i18next';
 // import VideoBackground from '../../components/VideoBackground/VideoBackground';
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
           </>
         )}
       </HomeContainer>
-      <Partners />
+      {/* <Partners /> */}
     </>
   );
 };

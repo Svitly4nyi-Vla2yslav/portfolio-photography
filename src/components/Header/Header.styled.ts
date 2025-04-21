@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-export const NavbarContainer = styled.header<{ isScrolled: boolean }>`
+export const NavbarContainer = styled.header<{ $isScrolled: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
- background: ${({ isScrolled }) =>
-    isScrolled ? 'rgba(28, 28, 28, 0.7)' : 'transparent'};
-  box-shadow: ${({ isScrolled }) =>
-    isScrolled ? '0 4px 15px rgba(0, 0, 0, 0.4)' : 'none'};
+ background: ${({ $isScrolled }) =>
+    $isScrolled ? 'rgba(28, 28, 28, 0.7)' : 'transparent'};
+  box-shadow: ${({ $isScrolled }) =>
+    $isScrolled ? '0 4px 15px rgba(0, 0, 0, 0.4)' : 'none'};
   position: fixed;
   top: 0;
   left: 0;
