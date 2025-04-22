@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import VideoLogo from "../../assets/video/logo.mp4";
+import VideoLogo from "../../assets/video/logo_animated_hq.webm";
 
 // Анімації
 const fadeOutAnimation = keyframes`
@@ -47,8 +47,8 @@ const VideoContainer = styled.div<{ $playVideo: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100vh;
 
   ${({ $playVideo }) =>
     $playVideo &&
