@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Border,
+  CopyrightContainer,
+  EmailContainer,
+  EmailLink,
   FooterContainer,
-  FooterItemText,
-  FooterItemTitel,
-  FooterLink,
-  FooterList,
-  FooterText,
+  FooterWrapp,
+  SocialContainer,
+  SocialLink,
+  SocialLinkWrapper,
+  TextCopyright,
+  TitelCopyright,
 } from './Footer.styled';
 
 import AOS from 'aos';
@@ -26,27 +31,32 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <FooterContainer $isScrolled={isScrolled}>
-      {' '}
-      {/* Changed to $isScrolled */}
-      <FooterList>
-        {/* Removed the outer Link since Logo already has a Link */}
-        <FooterLink to="/" style={{ padding: 0 }}>
-          {/* <img src={LogoIcon} alt="Logo" /> */}
-        </FooterLink>
-        <FooterItemText> </FooterItemText>
-        <FooterItemText>
-          {/* <Trans
-          
-            components={{ company_name: <SpanTitel /> }}
-          /> */}
-        </FooterItemText>
-      </FooterList>
-      <FooterList>
-        <FooterItemTitel>usefulLinks</FooterItemTitel>
-      </FooterList>
-      <FooterText>footer copyright</FooterText>
-    </FooterContainer>
+    <>
+      <FooterContainer $isScrolled={isScrolled}>
+        <Border />
+        <FooterWrapp>
+          <CopyrightContainer>
+            <TextCopyright>Copyright</TextCopyright>
+            <TitelCopyright>© 2025 Pavlo Troph</TitelCopyright>
+          </CopyrightContainer>
+          <EmailContainer>
+            <TextCopyright>Contact</TextCopyright>
+            <EmailLink href="mailto:info@pavlotroph.com">
+              info@pavlotroph.com
+            </EmailLink>
+          </EmailContainer>
+
+          <SocialContainer>
+            <TextCopyright>Social</TextCopyright>
+            <SocialLinkWrapper>
+              <SocialLink>Instagram</SocialLink>
+              <SocialLink>YouTube</SocialLink>
+              <SocialLink>LinkedIn</SocialLink>
+            </SocialLinkWrapper>
+          </SocialContainer>
+        </FooterWrapp>
+      </FooterContainer>
+    </>
   );
 };
 
