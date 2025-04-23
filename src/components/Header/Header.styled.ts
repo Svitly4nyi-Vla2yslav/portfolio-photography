@@ -75,9 +75,11 @@ export const NavItem = styled.li`
 
 export const StyledNavLink = styled(NavLink)`
   text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.8);
+ font-family: var(--second-family);
+font-weight: 500;
+font-size: 24px;
+text-align: center;
+color: #fff;
   transition: all 0.3s ease-in-out;
   position: relative;
 

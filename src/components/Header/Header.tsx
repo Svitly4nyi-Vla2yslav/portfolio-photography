@@ -7,10 +7,10 @@ import {
   StyledNavLink,
 } from './Header.styled';
 import { useMediaQuery } from 'react-responsive';
-import { MobileMenu } from '../MobileMenu/MobileMenu';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import LogoIcon from '../../../public/logo-portfolio.svg';
+import LogoIcon from '../../assets/icons/logo-portfolio.svg';
+import BurgerMenu from '../MobileMenu/MobileMenu';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
       </Logo>
       <NavList>
         {isMobile ? (
-          <MobileMenu />
+          <BurgerMenu />
         ) : (
           <>
             <NavItem>

@@ -1,15 +1,42 @@
-// import { createGlobalStyle } from "styled-components";
-import 'modern-normalize';
-import "@fontsource/orbitron";
-import { css } from '@emotion/react';
+import "modern-normalize";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/geist-sans/400.css"; // Geist Regular
+import "@fontsource/geist-sans/600.css"; // Geist SemiBold
+import "@fontsource/geist-mono/600.css"; // Geist Mono SemiBold
+import { css } from "@emotion/react";
+import GeistRegular from "../public/fonts/Geist/Geist-Regular.ttf";
+import GeistSemiBold from "../public/fonts/Geist/Geist-SemiBold.ttf"
+import GeistMono from "../public/fonts/Geist_mono/GeistMono-SemiBold.ttf"
 
 export const GlobalStyle = css`
 
-:root {
-  --font-family: "Geist", sans-serif;
-  --second-family: "JetBrains Mono", sans-serif;
-  --third-family: "Geist Mono", sans-serif;
-}
+  @font-face {
+    font-family: 'Geist';
+    src: url(${GeistRegular})  format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Geist';
+    src: url(${GeistSemiBold}) format("truetype");
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url(${GeistMono}) format("truetype");
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  :root {
+    --font-family: "Geist", sans-serif;
+    --second-family: "JetBrains Mono", sans-serif;
+    --third-family: "Geist Mono", sans-serif;
+  }
 
   * {
     margin: 0;
@@ -17,36 +44,34 @@ export const GlobalStyle = css`
     box-sizing: border-box;
     --v1: calc(max(9vw, 11vh));
     scrollbar-width: none;
-     word-wrap: break-word;
+    word-wrap: break-word;
   }
 
   body {
-    font-family: 'Orbitron', sans-serif;
-    background-color: #f9f7f7;
-    height: 100%;
-    width: 100%;
-    font-size: 100%;
-    line-height: 1;
-    -ms-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
+    font-family: var(--font-family);
+    background-color: #000;
+    color: #fff;
+    min-height: 100vh;
+    transition-duration: 300ms;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
-    background-color: #000;
-     transition-duration: 300ms;
-  }
-
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-      monospace;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-size: inherit;
-    font-weight: 400;
+    font-weight: 600;
+    font-family: "Geist", sans-serif;
     color: #fff;
-    font-family: "Tt Firs Neue";
+  }
+
+  code {
+    font-family: var(--second-family);
+  }
+
+  a {
+    text-decoration: none;
+    &:hover {
+      color: rgb(0, 250, 225);
+    }
   }
 
   img {
@@ -55,114 +80,54 @@ export const GlobalStyle = css`
     object-fit: cover;
   }
 
-  a {
-    text-decoration: none;
-    &:hover {
-      color: rgb(0, 250, 225);
-    }
-    &:visited {
-      text-decoration: none;
-    }
-  }
-
   button {
-  cursor: pointer;
-  background: linear-gradient(90deg, 
- #e4e4e4,
-   0%,  #e4e4e4
- 33.333%,
-    #203a43, 33.333%,
-     #2c5364 66.666%,
-      #e4e4e4 66.666%, 
-      #e4e4e4,) 100%);
-background-size: 305% 100%;
-background-position: right bottom;
- transition: all 0.5s ease-in-out;
- 
+    cursor: pointer;
+    font-family: var(--second-family);
+    background: linear-gradient(90deg, #e4e4e4 0%, #203a43 33.33%, #2c5364 66.66%, #e4e4e4 100%);
+    background-size: 305% 100%;
+    background-position: right bottom;
+    transition: all 0.5s ease-in-out;
   }
 
-  *, *:before, *:after {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-
-  nav, footer, header {
-    display: block;
-  }
-
-  input, button, textarea {
-    font-family: inherit;
-  }
-
-  input::-ms-clear {
-    display: none;
-  }
-
-  button::-moz-focus-inner {
-    padding: 0;
-    border: 0;
-  }
-
-    ul,
-  li {
+  ul, li {
     list-style: none;
-    padding: 0;
-    margin: 0;
   }
 
   html {
-    overflow-x: hidden;
     scroll-behavior: smooth;
-   
-    }
-
-
-    html, body {
-  height: -webkit-fill-available;
-  font-smoothing: antialiased;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-body::-webkit-scrollbar {
-  display: none;
-}
-
-button, input, textarea {
-
-  font-size: 16px;
-
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #000;
-    color: #fff;
+    overflow-x: hidden;
   }
-}
+
+  html, body {
+    height: -webkit-fill-available;
+    font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  input, textarea, button {
+    font-size: 16px;
+    font-family: inherit;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #000;
+      color: #fff;
+    }
+  }
 
   @keyframes buttonAnimationOut {
-                            0% {
-                                background-position: center bottom;
-                            }
-
-                            99.99% {
-                                background-position: left bottom;
-                            }
-
-                            100% {
-                                background-position: right bottom;
-                            }
-                        }
+    0% { background-position: center bottom; }
+    99.99% { background-position: left bottom; }
+    100% { background-position: right bottom; }
+  }
 
   @keyframes move {
-  from {
-    tranform: translateY(0%);
+    from { transform: translateY(0%); }
+    to { transform: translateY(-100%); }
   }
-
-  to {
-    transform: translateY(-100%);
-  }
-}
 `;
