@@ -68,7 +68,7 @@ export const NavItem = styled.li`
 
     &:hover,
     &.active {
-      color: #6f42c1;
+      color: #808080;
     }
   }
 `;
@@ -84,7 +84,7 @@ color: #fff;
   position: relative;
 
   &:hover {
-    color: #6f42c1;
+    color: #808080;
     transform: scale(1.1);
   }
 
@@ -95,12 +95,12 @@ color: #fff;
     bottom: -4px;
     width: 0;
     height: 2px;
-    background-color: #6f42c1;
+    background-color: #808080;
     transition: width 0.3s ease-in-out;
   }
 
   &.active {
-    color: #6f42c1;
+    color: #808080;
     &::after {
       width: 100%;
     }
