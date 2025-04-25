@@ -13,7 +13,7 @@ width: 100%;
 margin: 0 auto;
 position: fixed;
 bottom: 0; 
-
+z-index: 10;
 @media screen and (min-width: 744px){
 
 
