@@ -1,21 +1,21 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import {
   HomeContainer,
   HomeTitel,
   HomeWrapperDetails,
 } from './HomePage.styled';
-import Preloader from '../../components/Preloader/Preloader';
+// import Preloader from '../../components/Preloader/Preloader';
 // import Partners from '../../components/SlidePartners/Partners';
 import React from 'react';
 import { NavItem, StyledNavLink } from '../../components/Header/Header.styled';
 // import VideoBackground from '../../components/VideoBackground/VideoBackground';
 
 const Home: React.FC = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  // const [isLoaded, setIsLoaded] = useState(false);
 
-  const handlePreloaderComplete = () => {
-    setIsLoaded(true);
-  };
+  // const handlePreloaderComplete = () => {
+  //   setIsLoaded(true);
+  // };
 
   return (
     <>
@@ -44,8 +44,8 @@ const Home: React.FC = () => {
         </HomeTitel>
 
         {/* <VideoBackground /> */}
-        {!isLoaded && <Preloader onComplete={handlePreloaderComplete} />}
-        {isLoaded && <></>}
+        {/* {!isLoaded && <Preloader onComplete={handlePreloaderComplete} />}
+        {isLoaded && <></>} */}
       </HomeContainer>
     </>
   );
