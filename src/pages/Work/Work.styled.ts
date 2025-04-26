@@ -124,16 +124,16 @@ export const WorkPhotoWrapp = styled.div`
 }
 `;
 export const WorkItem = styled.div`
-// height: 200px;
+height: 200px;
 width: 100%;
 @media screen and (min-width: 744px){
-// height: 400px
+height: 270px
 position: relative;
 
 }
 
 @media screen and (min-width: 1440px){
-
+height: 400px;
 
 }
 `;
@@ -229,11 +229,20 @@ export const VideoPreview = styled.div`
   height: 100%;
   background-color: black;
   overflow: hidden;
-
+ height:200px;
   & iframe {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+
+    @media screen and (min-width: 744px) {
+  height:270px
+  }
+
+  @media screen and (min-width: 1440px) {
+  height: 400px;
   }
 `;
 export const WorkDescriptionWrapp = styled.div`

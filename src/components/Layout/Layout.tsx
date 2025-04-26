@@ -12,7 +12,7 @@ export const Layout: React.FC = () => {
       <Suspense>
         <Outlet />
       </Suspense>
-      {location.pathname !== '/home' && <Footer />}
+      {(location.pathname !== '/' && location.pathname !== '/home') && <Footer />}
     </>
   );
 };

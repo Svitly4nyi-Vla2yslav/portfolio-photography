@@ -1,40 +1,160 @@
-import React from 'react';
-import { ImageDescription, VideoPreview, WorkImage, WorkItem, WorkSpannImage } from '../../pages/Work/Work.styled';
+import React, { useState, useRef } from 'react';
+import {
+  ImageDescription,
+  VideoPreview,
+  WorkSpannImage,
+} from '../../pages/Work/Work.styled';
+import Modal from '../Modal/Modal';
 import { WorkItemData } from '../../pages/Work/Work';
 
 interface WorkItemComponentProps {
-    work: WorkItemData;
-  }
-  
-  const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
-    const getImageUrl = (folder: string, imageName: string) => {
-      return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${imageName}`;
-    };
-  
-    const isVideo = work.image_name.endsWith('.mp4') || work.image_name.endsWith('.mov'); // Перевірка на відео
-  
-    return (
-      <WorkItem key={work.id}>
-        <WorkSpannImage imageUrl={getImageUrl(work.folder, work.image_name)}>
-          {isVideo ? (
-            <VideoPreview>
-              <iframe
-                src={`https://player.vimeo.com/video/${work.image_name}`}
-                frameBorder="0"
-                allow="autoplay; fullscreen"
-                allowFullScreen
-              ></iframe>
-            </VideoPreview>
-          ) : (
-            <WorkImage
-              src={getImageUrl(work.folder, work.image_name)}
-              alt={work.title}
-            />
-          )}
-          <ImageDescription>{work.title}</ImageDescription>
-        </WorkSpannImage>
-      </WorkItem>
-    );
+  work: WorkItemData;
+}
+
+const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
+  const [, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleHover = () => {
+    setIsHovered(true);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 2;
+      videoRef.current.play();
+    }
   };
+
+  const handleLeave = () => {
+    setIsHovered(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 2;
+    }
+  };
+
+  const handleClick = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const { folder, image_name, title } = work;
+  const src = `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${image_name}`;
+
+  // Прев'юшка для відео
+  const previewSrc = image_name.toLowerCase().endsWith('.mp4')
+    ? src.replace('.mp4', '-preview.jpg')
+    : src;
+
+    const handleLoadedMetadata = () => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 2;
+      }
+    };
+
+  const isVideo = image_name.toLowerCase().endsWith('.mp4');
+
+  return (
+    <>
+      <div
+        onMouseEnter={handleHover}
+        onMouseLeave={handleLeave}
+        onFocus={handleHover}
+        onBlur={handleLeave}
+        onClick={handleClick}
+        style={{
+          cursor: 'pointer',
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+        }}
+      >
+        {isVideo ? (
+          <VideoPreview>
+            <video
+              ref={videoRef}
+              src={src}
+              poster={previewSrc}
+              muted
+              loop
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onLoadedMetadata={handleLoadedMetadata} 
+            />
+          </VideoPreview>
+        ) : (
+          <WorkSpannImage imageUrl={src}>
+            <img
+              src={src}
+              alt="preview"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <ImageDescription>{title}</ImageDescription>
+          </WorkSpannImage>
+        )}
+      </div>
+
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <div
+            style={{
+              position: 'relative',
+              width: '90%',
+              height: '90%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '20px',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Кнопка закриття */}
+            <button
+              onClick={closeModal}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '30px',
+                cursor: 'pointer',
+                color: '#999',
+              }}
+            >
+              ✖
+            </button>
+
+            {isVideo ? (
+              <video
+                src={src}
+                controls
+                autoPlay
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <img
+                src={src}
+                alt="Full View"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            )}
+            {/* Опис тексту */}
+            <p
+              style={{
+                fontFamily: 'var(--second-family)',
+                fontWeight: 400,
+                fontSize: '18px',
+                letterSpacing: '-0.02em',
+                color: '#808080',
+                textAlign: 'center',
+                padding: '10px',
+              }}
+            >
+              {title}
+            </p>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+};
 
 export default WorkItemComponent;
