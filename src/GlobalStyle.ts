@@ -32,6 +32,8 @@ export const GlobalStyle = css`
     font-style: normal;
   }
 
+
+
   :root {
     --font-family: "Geist", sans-serif;
     --second-family: "JetBrains Mono", sans-serif;

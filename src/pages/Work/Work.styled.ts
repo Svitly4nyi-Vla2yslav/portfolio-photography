@@ -177,54 +177,53 @@ z-index: 1;
 }
 `;
 
-export const WorkSpannImage = styled.span<{ imageUrl: string }>`
+export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
   position: relative;
   overflow: hidden;
   display: inline-block;
   width: 100%;
   height: 100%;
-   transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+
   &::after {
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    // height: 40%;
     pointer-events: none;
     transition: all 0.6s ease-in-out;
+    background-image: url(${props => props.$imageUrl});
     background-size: cover;
     background-position: center;
-    z-index: 1;  // Встановлюємо вищий рівень для градієнта
+    z-index: 1;
   }
 
-  &:hover::after {
-   background: linear-gradient(0deg, rgba(16, 16, 16, 1.7) 0%, rgba(16, 16, 16, 0) 100%);
-               
+  &:hover::after,
+  &.hover::after {
+    background: linear-gradient(0deg, rgba(16, 16, 16, 1.7) 0%, rgba(16, 16, 16, 0) 100%);
     background-size: fit;
     background-position: center;
     height: 47%;
     overflow: hidden;
-   
   }
 
-  &:hover ${ImageDescription} {
-    opacity: 1;  // Покажемо опис при наведенні
-     z-index: 2;
-  }
-
-  @media screen and (min-width: 744px) {
-  
-  }
-
-  @media screen and (min-width: 1440px) {
-  
+  &:hover ${ImageDescription},
+  &.hover ${ImageDescription} {
+    opacity: 1;
+    z-index: 2;
   }
 `;
 
 
 
-export const VideoPreview = styled.div`
+
+
+interface VideoPreviewProps {
+  $imageUrl: string;
+}
+
+export const VideoPreview = styled.div<VideoPreviewProps>`
   position: relative;
   width: 100%;
   height: 100%;
@@ -235,6 +234,34 @@ export const VideoPreview = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+      &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+    transition: all 0.6s ease-in-out;
+    background-image: url(${props => props.$imageUrl});
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+  }
+
+  &:hover::after,
+  &.hover::after {
+    background: linear-gradient(0deg, rgba(16, 16, 16, 1.7) 0%, rgba(16, 16, 16, 0) 100%);
+    background-size: fit;
+    background-position: center;
+    height: 47%;
+    overflow: hidden;
+  }
+
+  &:hover ${ImageDescription},
+  &.hover ${ImageDescription} {
+    opacity: 1;
+    z-index: 2;
   }
 
 

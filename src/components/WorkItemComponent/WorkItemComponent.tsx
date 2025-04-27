@@ -13,12 +13,14 @@ interface WorkItemComponentProps {
 }
 
 const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
-  const [, setIsHovered] = useState(false);
+  // const [, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mediaSrc, setMediaSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
+ 
   const { folder, image_name, title } = work;
   const src = `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${image_name}`;
   const isVideo = image_name.toLowerCase().endsWith('.mp4');
@@ -70,7 +72,13 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
       <div style={{ width: '100%', height: '100%', background: '#f0f0f0' }} />
     );
   }
-
+  const handleTouchStart = () => {
+    setIsHovered(true);
+  };
+  
+  const handleTouchEnd = () => {
+    setIsHovered(false);
+  };
   return (
     <>
       <div
@@ -89,7 +97,13 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
         }}
       >
         {isVideo ? (
-          <VideoPreview>
+          <VideoPreview 
+          className={isHovered ? 'hover' : ''}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          $imageUrl={mediaSrc || src}>
             <video
               ref={videoRef}
               src={mediaSrc || src}
@@ -99,11 +113,17 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
               onLoadedMetadata={handleLoadedMetadata}
               preload="metadata"
             />
+            <ImageDescription>{title}</ImageDescription>
           </VideoPreview>
         ) : (
           <WorkSpannImage
-         
-          imageUrl={mediaSrc || src}>
+          className={isHovered ? 'hover' : ''}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          $imageUrl={mediaSrc || src}
+          >
             <img
               
               src={mediaSrc || src}
