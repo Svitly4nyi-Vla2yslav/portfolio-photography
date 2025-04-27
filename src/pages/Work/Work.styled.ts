@@ -71,6 +71,7 @@ export const WorkTextFilter = styled.a`
   font-size: 13px;
   line-height: 162%;
   color: #fff;
+  cursor: pointer;
 
   transition: all 0.3s ease-in-out;
   position: relative;

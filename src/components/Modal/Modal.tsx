@@ -1,5 +1,20 @@
 import React from 'react';
+import styled from 'styled-components';
 
+
+export const ModalWrapper = styled.div`
+max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.17);
+    padding: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+`;
 interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
@@ -19,19 +34,12 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
         zIndex: 1000,
       }}
     >
-      <div
+      <ModalWrapper
         onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: '90%',
-          maxHeight: '90%',
-          backgroundColor: '#000',
-          padding: '10px',
-          borderRadius: '8px',
-          overflow: 'hidden'
-        }}
+      
       >
         {children}
-      </div>
+      </ModalWrapper>
     </div>
   );
 };

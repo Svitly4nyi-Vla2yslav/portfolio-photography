@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ImageDescription,
   VideoPreview,
@@ -6,6 +6,7 @@ import {
 } from '../../pages/Work/Work.styled';
 import Modal from '../Modal/Modal';
 import { WorkItemData } from '../../pages/Work/Work';
+import { fetchWithCache } from '../../utils/cacheUtils';
 
 interface WorkItemComponentProps {
   work: WorkItemData;
@@ -14,7 +15,30 @@ interface WorkItemComponentProps {
 const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
   const [, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mediaSrc, setMediaSrc] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const { folder, image_name, title } = work;
+  const src = `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${image_name}`;
+  const isVideo = image_name.toLowerCase().endsWith('.mp4');
+
+  useEffect(() => {
+    const loadMedia = async () => {
+      setIsLoading(true);
+      try {
+        const cachedUrl = await fetchWithCache(src);
+        setMediaSrc(cachedUrl);
+      } catch (error) {
+        console.error('Error loading media:', error);
+        setMediaSrc(src); // Fallback to original source
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMedia();
+  }, [src]);
 
   const handleHover = () => {
     setIsHovered(true);
@@ -35,25 +59,23 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
   const handleClick = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const { folder, image_name, title } = work;
-  const src = `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${image_name}`;
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 2;
+    }
+  };
 
-  // Прев'юшка для відео
-  const previewSrc = image_name.toLowerCase().endsWith('.mp4')
-    ? src.replace('.mp4', '-preview.jpg')
-    : src;
-
-    const handleLoadedMetadata = () => {
-      if (videoRef.current) {
-        videoRef.current.currentTime = 2;
-      }
-    };
-
-  const isVideo = image_name.toLowerCase().endsWith('.mp4');
+  if (isLoading) {
+    return (
+      <div style={{ width: '100%', height: '100%', background: '#f0f0f0' }} />
+    );
+  }
 
   return (
     <>
       <div
+        onTouchStart={handleHover}
+        onTouchEnd={handleLeave}
         onMouseEnter={handleHover}
         onMouseLeave={handleLeave}
         onFocus={handleHover}
@@ -70,20 +92,24 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
           <VideoPreview>
             <video
               ref={videoRef}
-              src={src}
-              poster={previewSrc}
+              src={mediaSrc || src}
               muted
               loop
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onLoadedMetadata={handleLoadedMetadata} 
+              onLoadedMetadata={handleLoadedMetadata}
+              preload="metadata"
             />
           </VideoPreview>
         ) : (
-          <WorkSpannImage imageUrl={src}>
+          <WorkSpannImage
+         
+          imageUrl={mediaSrc || src}>
             <img
-              src={src}
+              
+              src={mediaSrc || src}
               alt="preview"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              loading="lazy"
             />
             <ImageDescription>{title}</ImageDescription>
           </WorkSpannImage>
@@ -105,7 +131,6 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
               overflow: 'hidden',
             }}
           >
-            {/* Кнопка закриття */}
             <button
               onClick={closeModal}
               style={{
@@ -117,6 +142,7 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
                 fontSize: '30px',
                 cursor: 'pointer',
                 color: '#999',
+                zIndex: 100,
               }}
             >
               ✖
@@ -131,12 +157,11 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
               />
             ) : (
               <img
-                src={src}
+                src={mediaSrc || src}
                 alt="Full View"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             )}
-            {/* Опис тексту */}
             <p
               style={{
                 fontFamily: 'var(--second-family)',
