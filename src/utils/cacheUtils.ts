@@ -2,48 +2,67 @@
 const CACHE_PREFIX = 'media_cache_';
 const CACHE_EXPIRATION_DAYS = 7;
 
-// Simplified caching that only caches successful responses
 export const fetchWithCache = async (url: string): Promise<string> => {
-  // First check if we have a cached version
   const cacheKey = CACHE_PREFIX + url;
   const cachedItem = localStorage.getItem(cacheKey);
-  
+
   if (cachedItem) {
-    const { data, timestamp } = JSON.parse(cachedItem);
+    const { data, timestamp, isVideo } = JSON.parse(cachedItem);
+    
     // Check if cache is still valid
     if (Date.now() - timestamp < CACHE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000) {
-      return data;
+      if (isVideo) {
+        // For video, use the video URL directly
+        return data;
+      } else {
+        // For images, return base64-encoded data
+        return data;
+      }
     }
+
     // Remove expired cache
     localStorage.removeItem(cacheKey);
   }
 
   try {
     const response = await fetch(url);
-    
-    // Only cache successful responses
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // For images, use the URL directly (no base64 conversion)
+    // For images
     if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
-      // Cache the URL only (not the content)
-      localStorage.setItem(cacheKey, JSON.stringify({
-        data: url, // Store original URL
-        timestamp: Date.now()
-      }));
-      return url;
+      const blob = await response.blob();
+      const reader = new FileReader();
+
+      return new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          localStorage.setItem(cacheKey, JSON.stringify({
+            data: base64data,
+            timestamp: Date.now(),
+            isVideo: false
+          }));
+          resolve(base64data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     }
-    // For videos, just return the URL
+    // For video
     else if (url.match(/\.(mp4|webm|ogg)$/i)) {
+      localStorage.setItem(cacheKey, JSON.stringify({
+        data: url,
+        timestamp: Date.now(),
+        isVideo: true
+      }));
       return url;
     }
     
     return url;
   } catch (error) {
     console.error('Failed to fetch media:', error);
-    // Return original URL as fallback
     return url;
   }
 };

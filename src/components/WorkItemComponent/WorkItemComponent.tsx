@@ -72,13 +72,7 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
       <div style={{ width: '100%', height: '100%', background: '#f0f0f0' }} />
     );
   }
-  const handleTouchStart = () => {
-    setIsHovered(true);
-  };
-  
-  const handleTouchEnd = () => {
-    setIsHovered(false);
-  };
+
   return (
     <>
       <div
@@ -101,8 +95,8 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
           className={isHovered ? 'hover' : ''}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          onTouchStart={handleHover}
+          onTouchEnd={handleLeave}
           $imageUrl={mediaSrc || src}>
             <video
               ref={videoRef}
@@ -120,12 +114,11 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
           className={isHovered ? 'hover' : ''}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          onTouchStart={handleHover}
+          onTouchEnd={handleLeave}
           $imageUrl={mediaSrc || src}
           >
             <img
-              
               src={mediaSrc || src}
               alt="preview"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -203,3 +196,4 @@ const WorkItemComponent: React.FC<WorkItemComponentProps> = ({ work }) => {
 };
 
 export default WorkItemComponent;
+
