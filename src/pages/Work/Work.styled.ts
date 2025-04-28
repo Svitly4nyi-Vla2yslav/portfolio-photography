@@ -178,28 +178,23 @@ export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
   width: 100%;
   height: 100%;
   transition: all 0.6s ease-in-out;
+  background-image: url(${props => props.$imageUrl});
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
 
   &::after {
     content: "";
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    pointer-events: none;
-    transition: all 0.6s ease-in-out;
-    background-image: url(${props => props.$imageUrl});
-    background-size: cover;
-    background-position: center;
+    inset: 0; /* top: 0; left: 0; right: 0; bottom: 0; */
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
     z-index: 1;
   }
 
-  &:hover::after,
-  &.hover::after {
-    background: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0) 100%);
-    background-size: fit;
-    background-position: center;
-    height: 47%;
-    overflow: hidden;
+  &:hover::after {
+    opacity: 1;
   }
 
   &:hover ${ImageDescription},
@@ -208,6 +203,7 @@ export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
     z-index: 2;
   }
 `;
+
 
 
 

@@ -17,7 +17,7 @@ z-index: 10;
 }
 
 @media screen and (min-width: 1440px){
-
+max-width: 1440px;
 
 }
 
@@ -31,14 +31,20 @@ z-index: 10;
 
 export const Border = styled.p`
   padding: 0px auto 50px auto;
-  width: 90%;
-  height: 1px; /* Збільшуємо висоту для еліпса */
+  width: 100%;
+  height: 2px; /* Збільшуємо висоту для еліпса */
   margin: 0 auto;
-  background: radial-gradient(
-      ellipse 118.85px 58.06px at 50% 50%,
-      rgb(252, 252, 252) 0%,
-      rgba(58, 55, 55, 0.42) 80%
-    );
+background: #d9d9d9;
+
+@media screen and (min-width: 744px){
+
+
+}
+
+@media screen and (min-width: 1440px){
+max-width: 1440px;
+
+}
 `;
 
 export const FooterWrapp = styled.div`
@@ -61,8 +67,8 @@ export const FooterWrapp = styled.div`
 }
 
 @media screen and (min-width: 1440px){
-
-width: 90%;
+  margin: 0 auto;
+   padding: 50px 0;
 }
 `;
 
