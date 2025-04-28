@@ -51,9 +51,11 @@ font-size: 48px;
 `;
 
 export const WorkFilterWrapp = styled.div`
-margin: 0 auto;
+    margin: 0 auto;
     display: flex;
     gap: 8%;
+    flex-direction: row;
+    justify-content: center;
 @media screen and (min-width: 744px){
 
 
@@ -113,7 +115,7 @@ export const WorkTextFilter = styled.a`
 `;
 
 export const WorkPhotoWrapp = styled.div`
-
+margin-bottom: 50px;
 @media screen and (min-width: 744px){
 
 
@@ -274,12 +276,17 @@ export const VideoPreview = styled.div<VideoPreviewProps>`
   }
 `;
 export const WorkDescriptionWrapp = styled.div`
-height: 200px;
-width: 100%;
-margin: 0 auto;
-margin-top: 50px;
-margin-bottom: 50px;
-max-width: 70%;
+    display: flex;
+    height: 200px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    max-width: 70%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 @media screen and (min-width: 744px){
 height: 400px;
 

@@ -117,9 +117,10 @@ const Work: React.FC = () => {
             </NotFoundText>
           </NotFoundWraperr>
         )}
-      </WorkPhotoWrapp>
+      </WorkPhotoWrapp>  <Border />
       {currentQuote && (
         <WorkDescriptionWrapp>
+        
           <WorkDescription>{currentQuote.text}</WorkDescription>
           <WorkTextDescription>
             — {currentQuote.author}, <i>{currentQuote.source}</i>

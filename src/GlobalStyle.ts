@@ -71,9 +71,12 @@ export const GlobalStyle = css`
 
   a {
     text-decoration: none;
+     transition: all 0.3s ease-in-out;
     &:hover {
-      color: rgb(0, 250, 225);
+      color: #808080;
+       transition: all 0.3s ease-in-out;
     }
+  
   }
 
   img {

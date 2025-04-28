@@ -11,7 +11,7 @@ color: rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
 width: 100%;
 margin: 0 auto;
-position: fixed;
+// position: fixed;
 bottom: 0; 
 z-index: 10;
 @media screen and (min-width: 744px){
