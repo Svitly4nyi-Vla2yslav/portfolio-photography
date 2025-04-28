@@ -20,6 +20,16 @@ color: #fff;
 
 export const WrapperInfo = styled.div`
 display: flex;
+gap: 20%;
+ margin-top: 50px;
+ margin-bottom: 50px;
+@media screen and (min-width: 744px){
+  gap: 50%;
+}
+
+@media screen and (min-width: 1440px){
+
+display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
@@ -27,6 +37,9 @@ display: flex;
     gap: 50%;
     margin-top: 50px;
     height: 100%;
+}
+
+
 `;
 
 export const SocialContainerLink = styled.div`

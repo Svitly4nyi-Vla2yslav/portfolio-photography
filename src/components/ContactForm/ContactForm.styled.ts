@@ -7,7 +7,6 @@ export const FormContainer = styled.div`
 `
 
 export const FormGroup = styled.div`
-  margin-bottom: 15px;
 `
 
 export const Input = styled.input`

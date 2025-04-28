@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  HeaderWrapper,
   Logo,
   NavbarContainer,
   NavItem,
@@ -30,8 +31,7 @@ const Header: React.FC = () => {
 
   return (
     <NavbarContainer $isScrolled={isScrolled}>
-      {' '}
-      {/* Changed to $isScrolled */}
+    <HeaderWrapper>
       <Logo to="/home">
         <img src={LogoIcon} alt="Logo" />
       </Logo>
@@ -60,7 +60,7 @@ const Header: React.FC = () => {
             </NavItem>
           </>
         )}
-      </NavList>
+      </NavList></HeaderWrapper>
     </NavbarContainer>
   );
 };

@@ -1,10 +1,7 @@
 import styled from 'styled-components';
 
 export const FooterContainer = styled.footer<{ $isScrolled: boolean }>`
- background: ${({ $isScrolled }) =>
-    $isScrolled ? 'transparent' : 'rgba(28, 28, 28, 0.7)'};
-  box-shadow: ${({ $isScrolled }) =>
-    $isScrolled ? 'none' : '0 4px 15px rgba(0, 0, 0, 0.4)'};
+
 text-align: center;
   background: transparent;
 color: rgba(255, 255, 255, 0.8);
@@ -27,8 +24,7 @@ z-index: 10;
    &:hover,
   &:focus,
   &.active {
-   background-color: rgba(28, 28, 28, 0.9);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+
     transition: all 0.4s ease-in-out;
   }
 `;

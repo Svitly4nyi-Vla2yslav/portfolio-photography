@@ -83,16 +83,8 @@ export const WorkTextFilter = styled.a`
     transform: scale(1.1);
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 0;
-    height: 2px;
-    background-color: #808080;
-    transition: width 0.3s ease-in-out;
-  }
+ 
+  
 
   &.active {
     color: #808080;
@@ -203,7 +195,7 @@ export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
 
   &:hover::after,
   &.hover::after {
-    background: linear-gradient(0deg, rgba(16, 16, 16, 1.7) 0%, rgba(16, 16, 16, 0) 100%);
+    background: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0) 100%);
     background-size: fit;
     background-position: center;
     height: 47%;

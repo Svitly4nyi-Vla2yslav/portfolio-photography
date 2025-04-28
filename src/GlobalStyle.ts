@@ -8,31 +8,38 @@ import { css } from "@emotion/react";
 import GeistRegular from "../public/fonts/Geist/Geist-Regular.ttf";
 import GeistSemiBold from "../public/fonts/Geist/Geist-SemiBold.ttf"
 import GeistMono from "../public/fonts/Geist_mono/GeistMono-SemiBold.ttf"
-
+import JetBrainsMonoMedium from "../public/fonts/JetBrains/JetBrainsMono-Medium.ttf"
+import JetBrainsMonoRegular from "../public/fonts/JetBrains/JetBrainsMono-Regular.ttf"
 export const GlobalStyle = css`
 
   @font-face {
     font-family: 'Geist';
     src: url(${GeistRegular})  format("truetype");
-    font-weight: 400;
     font-style: normal;
   }
 
   @font-face {
     font-family: 'Geist';
     src: url(${GeistSemiBold}) format("truetype");
-    font-weight: 600;
     font-style: normal;
   }
 
   @font-face {
     font-family: 'Geist Mono';
     src: url(${GeistMono}) format("truetype");
-    font-weight: 600;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'JetBrainsMono Medium';
+    src: url(${JetBrainsMonoMedium}) format("truetype");
     font-style: normal;
   }
 
-
+  @font-face {
+    font-family: 'JetBrainsMono Medium';
+    src: url(${JetBrainsMonoRegular}) format("truetype");
+    font-style: normal;
+  }
 
   :root {
     --font-family: "Geist", sans-serif;
