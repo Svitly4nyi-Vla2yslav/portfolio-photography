@@ -205,7 +205,28 @@ export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
 `;
 
 
+export const PreviewImage = styled.div<{ $src: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.$src});
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 1;
+`;
 
+export const OriginalContent = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+`;
 
 
 
@@ -241,7 +262,7 @@ export const VideoPreview = styled.div<VideoPreviewProps>`
 
   &:hover::after,
   &.hover::after {
-    background: linear-gradient(0deg, rgba(16, 16, 16, 1.7) 0%, rgba(16, 16, 16, 0) 100%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
     background-size: fit;
     background-position: center;
     height: 47%;
