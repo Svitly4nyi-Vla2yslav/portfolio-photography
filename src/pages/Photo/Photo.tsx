@@ -22,6 +22,7 @@ export type WorkItemData = {
   image_name: string;
   title: string;
   description: string;
+  preview_url: string | null;
 };
 
 type Quote = {
