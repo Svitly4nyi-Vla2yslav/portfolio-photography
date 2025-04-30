@@ -4,7 +4,6 @@ import Loading from '../../assets/video/logo_animated_hq.webm';
 import {
   CollectionContainer,
   CollectionHeader,
-  CollectionImage,
   CollectionGrid,
   CollectionBlock,
   TextBlock,
@@ -26,7 +25,9 @@ interface CollectionData {
   image_name2?: string;
   image_name3?: string;
   image_name4?: string;
+  image_name41?: string;
   title1?: string;
+  title11?: string;
   image_name5?: string;
   image_name6?: string;
   image_name7?: string;
@@ -41,9 +42,20 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+
+ 
 
   const getImageUrl = (imageName: string) => {
     return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${collection.folder}/${imageName}`;
+  };
+
+  const handleImageError = (imageName: string) => {
+    setFailedImages(prev => new Set(prev).add(imageName));
+  };
+
+  const isImageFailed = (imageName: string) => {
+    return failedImages.has(imageName);
   };
 
   useEffect(() => {
@@ -55,20 +67,24 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
           collection.image_name2,
           collection.image_name3,
           collection.image_name4,
+          collection.image_name41,
           collection.image_name5,
           collection.image_name6,
           collection.image_name7,
           collection.image_name8,
           collection.image_name9,
-        ].filter(Boolean);
+        ].filter(Boolean) as string[];
 
         await Promise.all(
           imagesToLoad.map(url => {
-            return new Promise((resolve, reject) => {
+            return new Promise<void>(resolve => {
               const img = new Image();
-              img.src = getImageUrl(url as string);
-              img.onload = resolve;
-              img.onerror = reject;
+              img.src = getImageUrl(url);
+              img.onload = () => resolve();
+              img.onerror = () => {
+                handleImageError(url);
+                resolve();
+              };
             });
           })
         );
@@ -84,6 +100,7 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
   }, [collection]);
 
   const openModal = (imageName: string) => {
+    if (isImageFailed(imageName)) return;
     setCurrentImage(getImageUrl(imageName));
     setIsModalOpen(true);
   };
@@ -116,6 +133,25 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
     );
   }
 
+  const renderImage = (
+    imageName: string | undefined,
+    alt: string,
+    index: number, // Додаємо індекс
+    styles = {}
+  ) => {
+    if (!imageName || isImageFailed(imageName)) return null;
+    
+    return (
+      <img
+        key={`${imageName}-${index}`} // Використовуємо індекс для унікальності
+        src={getImageUrl(imageName)}
+        alt={alt}
+        onClick={() => openModal(imageName)}
+        onError={() => handleImageError(imageName)}
+        style={styles}
+      />
+    );
+  };
   return (
     <CollectionContainer>
       <CollectionHeader>
@@ -130,7 +166,9 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
 
         <CollectionWrapper>
           <CollectionText>Tags</CollectionText>{' '}
-          <CollectionTitle style={{width: "60%"}}>{collection.tags.join(" ")}</CollectionTitle>
+          <CollectionTitle style={{ width: '60%' }}>
+            {collection.tags.join(' ')}
+          </CollectionTitle>
         </CollectionWrapper>
 
         <CollectionWrapper>
@@ -139,61 +177,48 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
         </CollectionWrapper>
       </CollectionHeader>
 
-      <CollectionImage
-        src={getImageUrl(collection.image_name)}
-        alt={collection.collection_name}
-        onClick={() => openModal(collection.image_name)}
-      />
+      {renderImage(collection.image_name, collection.collection_name, 0)}
 
       <p>{collection.description}</p>
 
       <CollectionGrid>
-        {[
-          collection.image_name1,
-          collection.image_name2,
-          collection.image_name3,
-        ].map(
-          (img, index) =>
-            img && (
-              <img
-                key={index}
-                src={getImageUrl(img)}
-                alt={`${collection.collection_name} ${index + 1}`}
-                onClick={() => openModal(img)}
-              />
-            )
-        )}
+      {[collection.image_name1, collection.image_name2, collection.image_name3]
+  .map((img, index) => 
+    renderImage(img, `${collection.collection_name} ${index + 1}`, index + 1)
+  )}
       </CollectionGrid>
 
-      {collection.image_name4 && collection.title1 && (
-        <CollectionBlock>
-          <img
-            src={getImageUrl(collection.image_name4)}
-            alt={collection.title1}
-            onClick={() => openModal(collection.image_name4 as string)}
-          />
-          <TextBlock>
-            <h3>{collection.title1}</h3>
-            <p>Additional description text here...</p>
-          </TextBlock>
-        </CollectionBlock>
-      )}
+      {collection.image_name4 &&
+        collection.title1 &&
+        !isImageFailed(collection.image_name4) && (
+          <CollectionBlock>
+            {renderImage(collection.image_name4, collection.title1, 4)}
+            <TextBlock>
+              <h3>{collection.title1}</h3>
+              <p>Additional description text here...</p>
+            </TextBlock>
+          </CollectionBlock>
+        )}
+
+      {/* Додатковий блок для image_name41 та title11 */}
+      {collection.image_name41 &&
+        collection.title11 &&
+        !isImageFailed(collection.image_name41) && (
+          <CollectionBlock>
+            {renderImage(collection.image_name41, collection.title11, 41)}
+            <TextBlock>
+              <h3>{collection.title11}</h3>
+              <p>Additional description text here...</p>
+            </TextBlock>
+          </CollectionBlock>
+        )}
 
       <CollectionGrid cols={5}>
         {[5, 6, 7, 8, 9].map(num => {
-          const img = collection[
-            `image_name${num}` as keyof CollectionData
-          ] as string;
-          return (
-            img && (
-              <img
-                key={num}
-                src={getImageUrl(img)}
-                alt={`${collection.collection_name} ${num}`}
-                onClick={() => openModal(img)}
-              />
-            )
-          );
+          const img = collection[`image_name${num}` as keyof CollectionData] as
+            | string
+            | undefined;
+          return renderImage(img, `${collection.collection_name} ${num}`, num);
         })}
       </CollectionGrid>
 
@@ -232,6 +257,10 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
                 maxWidth: '100%',
                 maxHeight: '100%',
                 objectFit: 'contain',
+              }}
+              onError={() => {
+                closeModal();
+                handleImageError(currentImage.split('/').pop() || '');
               }}
             />
           </div>
