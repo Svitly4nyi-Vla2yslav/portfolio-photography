@@ -6,6 +6,7 @@ import Contact from './pages/Contact/Contact';
 import Work from './pages/Work/Work';
 import Photo from './pages/Photo/Photo';
 import Info from './pages/Info/Info';
+import CollectionPage from './pages/CollectionPage/CollectionPage';
 
 export const App: React.FC = () => {
   return (
@@ -13,12 +14,13 @@ export const App: React.FC = () => {
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/work" element={<Work />} />
         <Route path="/photo" element={<Photo />} />
         <Route path="/info" element={<Info />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<AboutUs />} />
-
+        <Route path="/collections/:id" element={<CollectionPage />} />
         <Route path="*" element={<Home />} />
       </Route>
     </Routes>

@@ -36,7 +36,7 @@ display: flex;
     flex-wrap: wrap;
     gap: 50%;
     margin-top: 50px;
-    height: 100%;
+    height: 30%;
 }
 
 

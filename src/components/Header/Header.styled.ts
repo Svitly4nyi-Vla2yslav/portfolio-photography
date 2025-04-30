@@ -32,8 +32,7 @@ margin: 0 auto;
 `;
 
 export const HeaderWrapper = styled.div`
-      display: flex
-;
+      display: flex;
     width: 1440px;
     margin: 0 auto;
     justify-content: space-between;

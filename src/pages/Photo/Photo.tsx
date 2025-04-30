@@ -74,11 +74,9 @@ const Photo: React.FC = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setCurrentQuote(quotes[randomIndex]);
     }
-  }, [quotes]); // Цей useEffect спрацьовує, коли цитати завантажуються
+  }, [quotes]); 
 
-  // const getImageUrl = (folder: string, imageName: string) => {
-  //   return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${imageName}`;
-  // };
+
 
   return (
     <WorkContainer>
@@ -119,6 +117,7 @@ const Photo: React.FC = () => {
           </NotFoundWraperr>
         )}
       </WorkPhotoWrapp>
+         <Border />
       {currentQuote && (
         <WorkDescriptionWrapp>
           <WorkDescription>{currentQuote.text}</WorkDescription>

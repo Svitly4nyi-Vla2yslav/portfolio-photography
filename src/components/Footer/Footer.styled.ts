@@ -68,7 +68,7 @@ export const FooterWrapp = styled.div`
 
 @media screen and (min-width: 1440px){
   margin: 0 auto;
-   padding: 50px 0;
+   padding: 50px 32px;
 }
 `;
 

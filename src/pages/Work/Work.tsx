@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { supabase } from '../../supabaseClient';
+import WorkItemComponent from '../../components/WorkItemComponent/WorkItemComponent';
 import {
   WorkContainer,
   WorkDescription,
@@ -12,9 +14,7 @@ import {
   NotFoundWraperr,
   NotFoundText,
 } from './Work.styled';
-import { supabase } from '../../supabaseClient';
 import { Border } from '../../components/Footer/Footer.styled';
-import WorkItemComponent from '../../components/WorkItemComponent/WorkItemComponent';
 
 export type WorkItemData = {
   id: string;
@@ -35,10 +35,8 @@ type Quote = {
 const Work: React.FC = () => {
   const [works, setWorks] = useState<WorkItemData[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [currentQuote, setCurrentQuote] = useState<Quote | null>(null); // Додаємо стан для поточної цитати
-  const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>(
-    'ALL'
-  );
+  const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
+  const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>('ALL');
 
   const filteredWorks =
     filter === 'ALL'
@@ -70,15 +68,10 @@ const Work: React.FC = () => {
 
   useEffect(() => {
     if (quotes.length > 0) {
-      // Встановлюємо випадкову цитату при завантаженні
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setCurrentQuote(quotes[randomIndex]);
     }
-  }, [quotes]); // Цей useEffect спрацьовує, коли цитати завантажуються
-
-  // const getImageUrl = (folder: string, imageName: string) => {
-  //   return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${imageName}`;
-  // };
+  }, [quotes]);
 
   return (
     <WorkContainer>
@@ -95,7 +88,7 @@ const Work: React.FC = () => {
                   setCurrentQuote(quotes[randomIndex]);
                 }
               }}
-              className={filter === cat ? 'active' : ''} // Додаємо клас active до активного фільтра
+              className={filter === cat ? 'active' : ''}
             >
               {cat}
             </WorkTextFilter>
@@ -118,10 +111,12 @@ const Work: React.FC = () => {
             </NotFoundText>
           </NotFoundWraperr>
         )}
-      </WorkPhotoWrapp>  <Border />
+      </WorkPhotoWrapp>
+      
+      <Border />
+      
       {currentQuote && (
         <WorkDescriptionWrapp>
-        
           <WorkDescription>{currentQuote.text}</WorkDescription>
           <WorkTextDescription>
             — {currentQuote.author}, <i>{currentQuote.source}</i>
