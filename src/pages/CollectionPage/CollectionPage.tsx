@@ -2,54 +2,136 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import CollectionComponent from '../../components/CollectionComponent/CollectionComponent';
+import CollectionSlider from '../../components/CollectionsSwiper/CollectionsSwiper';
+import Loading from '../../assets/video/logo_animated_hq.webm';
+import { Border } from '../../components/Footer/Footer.styled';
+import { NotFoundWraperr, NotFoundText } from '../Work/Work.styled';
 
 const CollectionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [collection, setCollection] = useState<any>(null);
+  const [collections, setCollections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchCollection = async () => {
+    const fetchData = async () => {
       try {
-        // Отримуємо колекцію разом з даними з пов'язаної таблиці work
-        const { data, error } = await supabase
+        setLoading(true);
+        
+        // Завантажуємо конкретну колекцію
+        const { data: collectionData, error: collectionError } = await supabase
           .from('collections')
-          .select(`
-            *,
-            work:work_id (folder)
-          `)
+          .select(`*, work:work_id (folder)`)
           .eq('id', id)
           .single();
 
-        if (error) throw error;
+        if (collectionError) throw collectionError;
+        if (!collectionData) throw new Error('Collection not found');
 
-        if (!data) {
-          throw new Error('Collection not found');
-        }
+        // Завантажуємо всі колекції для навігації
+        const { data: allCollections } = await supabase
+          .from('collections')
+          .select('id')
+          .order('year', { ascending: false });
 
-        // Якщо work не знайдено, використовуємо work_id як папку за замовчуванням
-        const folder = data.work?.folder || data.work_id.toString();
+        const folder = collectionData.work?.folder || collectionData.work_id.toString();
 
         setCollection({ 
-          ...data,
+          ...collectionData,
           folder: folder
         });
-        setLoading(false);
+        setCollections(allCollections || []);
+        
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchCollection();
+    fetchData();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!collection) return <div>Collection not found</div>;
+  // Скрол до верху після завантаження
+  useEffect(() => {
+    if (!loading) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }, [loading]);
+  if (loading)
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#000',
+        }}
+      >
+        <video
+          src={Loading}
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{ width: '150px', height: '150px' }}
+        />
+      </div>
+    );
 
-  return <CollectionComponent collection={collection} />;
+  if (error)
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#000',
+        }}
+      >
+        {' '}
+        <video
+          src={Loading}
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{ width: '150px', height: '150px' }}
+        />
+        Error: {error}
+      </div>
+    );
+  if (!collection)
+    return (
+      <NotFoundWraperr>
+        <Border />
+        <NotFoundText>
+          404
+          <br />
+          NOT FOUND
+        </NotFoundText>
+      </NotFoundWraperr>
+    );
+
+  return (
+    <>
+      <div /> {/* Додайте цей елемент на початку вашого контенту */}
+      <CollectionComponent collection={collection} collections={collections} />
+      <CollectionSlider
+        currentId={collection.id}
+        collectionIds={collections.map(c => c.id)}
+        collectionName={collection.collection_name}
+      />
+    </>
+  );
 };
 
 export default CollectionPage;

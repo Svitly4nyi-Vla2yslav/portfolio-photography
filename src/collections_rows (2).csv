@@ -1,6 +1,0 @@
-id,work_id,collection_name,year,tags,synopsis,description,image_name,image_name1,image_name2,image_name3,image_name4,title1,image_name5,image_name6,image_name7,image_name8,image_name9
-3,3,Portrait,2025,"[""People"",""Emotions"",""Studio""]",Human emotions,Expressive portrait photography series.,image_hero.png,image1.png,image2.png,image3.png,image9.png,Faces and stories,image5.png,image6.png,image7.png,image8.png,image6.png
-4,4,Abstract,2024,"[""Art"",""Experimental"",""Colors""]",Abstract visions,Creative abstract compositions.,image_hero.png,image1.png,image2.png,image3.png,image9.png,Beyond reality,image5.png,image6.png,image7.png,image8.png,image6.png
-5,5,Documentary,2023,"[""Journalism"",""Storytelling"",""Real-life""]",Real stories,Documentary photography projects.,image_hero.png,image1.png,image2.png,image3.png,image9.png,Life unfiltered,image5.png,image6.png,image7.png,image8.png,image6.png
-11,11,B&W,2025,"[""Monochrome"",""Timeless"",""Classic""]",Black & white,Classic monochrome photography.,image_hero.png,image1.png,image2.png,image3.png,image9.png,Shades of gray,image5.png,image6.png,image7.png,image8.png,image6.png
-12,12,Street,2023,"[""Urban"",""Candid"",""Life""]",Street moments,Candid street photography.,image_hero.png,image1.png,image2.png,image3.png,image9.png,Urban tales,image5.png,image6.png,image7.png,image8.png,image6.png

@@ -14,38 +14,66 @@ import {
   CollectionTextWrapper,
   CollectionImageWrapper,
   ImageBlock,
+  Folder,
 } from './CollectionComponent.styled';
 
-interface CollectionData {
+export interface CollectionData {
   id: number;
+  work_id: string;
   collection_name: string;
   year: string;
   tags: string[];
   synopsis: string;
   description: string;
+  folder: string;
+  [key: string]: any;
+  // Main images
   image_name: string;
   image_name1?: string;
   image_name2?: string;
   image_name3?: string;
   image_name4?: string;
-  image_name41?: string;
-  title1?: string;
-  title11?: string;
   image_name5?: string;
   image_name6?: string;
   image_name7?: string;
   image_name8?: string;
   image_name9?: string;
-  folder: string;
+  image_name41?: string;
+
+  // Titles for images
+  image_name_title?: string;
+  image_name1_title?: string;
+  image_name2_title?: string;
+  image_name3_title?: string;
+  image_name4_title?: string;
+  image_name5_title?: string;
+  image_name6_title?: string;
+  image_name7_title?: string;
+  image_name8_title?: string;
+  image_name9_title?: string;
+  image_name41_title?: string;
+
+  // Additional content fields
+  title1?: string;
+  title11?: string;
+
+  // Optional work title from related table
+  work_title?: string;
 }
 
-const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
-  collection,
-}) => {
+const CollectionComponent: React.FC<{
+  collection: CollectionData;
+  collections: CollectionData[];
+}> = ({ collection }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState('');
+  const [currentImage, setCurrentImage] = useState({
+    url: '',
+    altText: '',
+    description: '',
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+  const topRef = React.useRef<HTMLDivElement>(null);
 
   const getImageUrl = (imageName: string) => {
     return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${collection.folder}/${imageName}`;
@@ -62,6 +90,9 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
   useEffect(() => {
     const loadImages = async () => {
       try {
+        setIsLoading(true); // Додайте це, щоб показувати завантаження при зміні колекції
+        setFailedImages(new Set()); // Скидаємо помилкові зображення для нової колекції
+
         const imagesToLoad = [
           collection.image_name,
           collection.image_name1,
@@ -98,17 +129,33 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
     };
 
     loadImages();
-  }, [collection]);
+  }, [collection.id]); // Змініть залежності на весь об'єкт колекції
 
-  const openModal = (imageName: string) => {
+  // Функція для блокування скролу
+
+  const openModal = (imageName: string, imageKey: string, altText: string) => {
     if (isImageFailed(imageName)) return;
-    setCurrentImage(getImageUrl(imageName));
+
+    const descriptionKey = `${imageKey}_title` as keyof CollectionData;
+    setCurrentImage({
+      url: getImageUrl(imageName),
+      altText: altText,
+      description: collection[descriptionKey] || '',
+    });
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    return () => {
+      // На випадок розмонтування компонента
+      document.body.classList.remove('modal-open');
+      document.body.style.top = '';
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -136,7 +183,8 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
 
   const renderImage = (
     imageName: string | undefined,
-    alt: string,
+    imageKey: string, // Ключ для пошуку опису (наприклад, "image_name1")
+    altText: string, // Альтернативний текст
     index: number,
     styles = {}
   ) => {
@@ -146,8 +194,8 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
       <div className="image-container" key={`${imageName}-${index}`}>
         <img
           src={getImageUrl(imageName)}
-          alt={alt}
-          onClick={() => openModal(imageName)}
+          alt={altText}
+          onClick={() => openModal(imageName, imageKey, altText)}
           onError={() => handleImageError(imageName)}
           style={styles}
         />
@@ -156,7 +204,8 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
   };
 
   return (
-    <CollectionContainer>
+    <CollectionContainer ref={topRef}>
+      <Folder>{collection.folder}</Folder>
       <CollectionHeader>
         <CollectionWrapper>
           <CollectionText>Collection</CollectionText>
@@ -180,7 +229,12 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
         </CollectionWrapper>
       </CollectionHeader>
 
-      {renderImage(collection.image_name, collection.collection_name, 0)}
+      {renderImage(
+        collection.image_name,
+        'image_name',
+        collection.collection_name,
+        0
+      )}
       <CollectionTextWrapper>
         <CollectionText>Description</CollectionText>
         <CollectionDescription>{collection.description}</CollectionDescription>
@@ -204,6 +258,7 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
           .map((img, index) =>
             renderImage(
               img,
+              `image_name${index + 1}`, // Ключ для пошуку опису
               `${collection.collection_name} ${index + 1}`,
               index + 1
             )
@@ -214,7 +269,12 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
         !isImageFailed(collection.image_name4) && (
           <CollectionBlock>
             <ImageBlock>
-              {renderImage(collection.image_name4, collection.title1, 4)}
+              {renderImage(
+                collection.image_name4,
+                'image_name4', // Ключ
+                collection.title1 || '', // Alt текст
+                4
+              )}
             </ImageBlock>
             <TextBlock>
               <h3>{collection.title1}</h3>
@@ -232,7 +292,12 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
               </TextBlock>
             )}
             <ImageBlock>
-              {renderImage(collection.image_name41, collection.title11, 41)}
+              {renderImage(
+                collection.image_name41,
+                'image_name41', // Ключ
+                collection.title11 || '', // Alt текст
+                41
+              )}
             </ImageBlock>
           </CollectionBlock>
         )}
@@ -242,26 +307,28 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
             | string
             | undefined;
           return img
-            ? renderImage(img, `${collection.collection_name} ${num}`, num)
+            ? renderImage(
+                img,
+                `image_name${num}`, // Ключ
+                `${collection.collection_name} ${num}`,
+                num
+              )
             : null;
         })}
       </CollectionImageWrapper>
       {isModalOpen && (
-        <Modal onClose={closeModal}>
+        <Modal onClose={closeModal} preventScroll={true}>
           <div
             style={{
-              position: 'relative',
-              width: '90%',
-              height: '90%',
               display: 'flex',
-              justifyContent: 'center',
+              flexDirection: 'column',
               alignItems: 'center',
             }}
           >
-            <button
+                 <button
               onClick={closeModal}
               style={{
-                position: 'absolute',
+                position: 'fixed',
                 top: '10px',
                 right: '10px',
                 background: 'transparent',
@@ -275,18 +342,33 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
               ✖
             </button>
             <img
-              src={currentImage}
-              alt="Full view"
+              src={currentImage.url}
+              alt={currentImage.altText}
               style={{
                 maxWidth: '100%',
-                maxHeight: '100%',
+                maxHeight: '80vh',
                 objectFit: 'contain',
-              }}
-              onError={() => {
-                closeModal();
-                handleImageError(currentImage.split('/').pop() || '');
+                marginBottom: '20px',
               }}
             />
+
+            <div
+              style={{
+                color: '#fff',
+                textAlign: 'center',
+                padding: '0 20px',
+                maxWidth: '800px',
+              }}
+            >
+              {currentImage.description && (
+                <p style={{ marginBottom: '20px' }}>
+                  {currentImage.description}
+                </p>
+              )}
+              {collection.work_title && (
+                <h3 style={{ marginTop: 0 }}>{collection.work_title}</h3>
+              )}
+            </div>
           </div>
         </Modal>
       )}

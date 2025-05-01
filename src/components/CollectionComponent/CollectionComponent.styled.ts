@@ -16,6 +16,15 @@ max-width: 100%;
 }
 `;
 
+export const Folder = styled.h2`
+text-transform: uppercase;
+font-family: var(--font-family);
+font-weight: 600;
+font-size: 32px;
+text-align: center;
+color: #fff;
+`
+
 export const CollectionWrapper = styled.div`
 display: flex;
 gap: 2rem;
@@ -109,7 +118,7 @@ display: flex;
         max-width: 1440px;
         margin: 0 auto;
         flex-direction: row;
-        padding: 150px 16px 150px 16px;
+        padding: 50px 16px 50px 16px;
         justify-content: space-between;
         align-items: flex-start;
 
@@ -308,15 +317,21 @@ export const TextBlock = styled.div`
   justify-content: center;
   padding: 1rem;
   text-align: center;
+  font-family: var(--font-family);
+font-weight: 600;
+font-size: 32px;
+text-align: center;
+color: #fff;
 
   h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+font-family: var(--font-family);
+font-weight: 600;
+font-size: 32px;
+text-align: center;
+color: #fff;
   }
 
-  p {
-    line-height: 1.6;
-  }
+
 
   @media screen and (min-width: 744px) {
   display: flex;
@@ -353,3 +368,5 @@ export const ImageBlock = styled.div`
     justify-content: center;
   }
 `;
+
+// !!!!!!!!!!!!!!

@@ -1,4 +1,0 @@
-id,full_name,email,subject,message,created_at
-1,John Doe,john@example.com,Inquiry about product,Hello, I would like more information about your product.,2025-04-27 12:00:00
-2,Jane Smith,jane@example.com,Support request,Need help with my account,Please assist me with logging into my account.,2025-04-27 12:05:00
-3,Max Mustermann,max@example.com,General question,How to order,Can you tell me the steps to place an order?,2025-04-27 12:10:00

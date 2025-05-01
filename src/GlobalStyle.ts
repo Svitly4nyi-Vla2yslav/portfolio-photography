@@ -36,7 +36,7 @@ export const GlobalStyle = css`
   }
 
   @font-face {
-    font-family: 'JetBrainsMono Medium';
+    font-family: 'JetBrainsMono Regular';
     src: url(${JetBrainsMonoRegular}) format("truetype");
     font-style: normal;
   }
@@ -65,6 +65,13 @@ export const GlobalStyle = css`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+    
+  body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;

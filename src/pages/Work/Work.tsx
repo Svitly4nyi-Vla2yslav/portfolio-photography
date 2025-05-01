@@ -11,10 +11,9 @@ import {
   WorkTextFilter,
   WorkTitel,
   WorkTitelContainer,
-  NotFoundWraperr,
-  NotFoundText,
 } from './Work.styled';
 import { Border } from '../../components/Footer/Footer.styled';
+import Loading from '../../assets/video/logo_animated_hq.webm';
 
 export type WorkItemData = {
   id: string;
@@ -36,7 +35,9 @@ const Work: React.FC = () => {
   const [works, setWorks] = useState<WorkItemData[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
-  const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>('ALL');
+  const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>(
+    'ALL'
+  );
 
   const filteredWorks =
     filter === 'ALL'
@@ -102,19 +103,30 @@ const Work: React.FC = () => {
             <WorkItemComponent key={work.id} work={work} />
           ))
         ) : (
-          <NotFoundWraperr>
-            <Border />
-            <NotFoundText>
-              404
-              <br />
-              NOT FOUND
-            </NotFoundText>
-          </NotFoundWraperr>
+          <div
+            style={{
+              width: '100%',
+              height: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#000',
+            }}
+          >
+            <video
+              src={Loading}
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{ width: '150px', height: '150px' }}
+            />
+          </div>
         )}
       </WorkPhotoWrapp>
-      
+
       <Border />
-      
+
       {currentQuote && (
         <WorkDescriptionWrapp>
           <WorkDescription>{currentQuote.text}</WorkDescription>
