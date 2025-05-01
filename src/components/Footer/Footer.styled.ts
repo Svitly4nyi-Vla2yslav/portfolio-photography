@@ -139,7 +139,7 @@ display: flex;
     flex-wrap: nowrap;
     gap: 10px;
 
-    @media screen and (min-width: 744px){
+@media screen and (min-width: 744px){
 
 
 }
