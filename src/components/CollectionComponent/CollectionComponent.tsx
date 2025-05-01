@@ -11,6 +11,9 @@ import {
   CollectionWrapper,
   CollectionText,
   CollectionDescription,
+  CollectionTextWrapper,
+  CollectionImageWrapper,
+  ImageBlock,
 } from './CollectionComponent.styled';
 
 interface CollectionData {
@@ -43,8 +46,6 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
   const [currentImage, setCurrentImage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
-
- 
 
   const getImageUrl = (imageName: string) => {
     return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${collection.folder}/${imageName}`;
@@ -136,22 +137,24 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
   const renderImage = (
     imageName: string | undefined,
     alt: string,
-    index: number, // Додаємо індекс
+    index: number,
     styles = {}
   ) => {
     if (!imageName || isImageFailed(imageName)) return null;
-    
+
     return (
-      <img
-        key={`${imageName}-${index}`} // Використовуємо індекс для унікальності
-        src={getImageUrl(imageName)}
-        alt={alt}
-        onClick={() => openModal(imageName)}
-        onError={() => handleImageError(imageName)}
-        style={styles}
-      />
+      <div className="image-container" key={`${imageName}-${index}`}>
+        <img
+          src={getImageUrl(imageName)}
+          alt={alt}
+          onClick={() => openModal(imageName)}
+          onError={() => handleImageError(imageName)}
+          style={styles}
+        />
+      </div>
     );
   };
+
   return (
     <CollectionContainer>
       <CollectionHeader>
@@ -178,50 +181,71 @@ const CollectionComponent: React.FC<{ collection: CollectionData }> = ({
       </CollectionHeader>
 
       {renderImage(collection.image_name, collection.collection_name, 0)}
+      <CollectionTextWrapper>
+        <CollectionText>Description</CollectionText>
+        <CollectionDescription>{collection.description}</CollectionDescription>
+      </CollectionTextWrapper>
 
-      <p>{collection.description}</p>
-
-      <CollectionGrid>
-      {[collection.image_name1, collection.image_name2, collection.image_name3]
-  .map((img, index) => 
-    renderImage(img, `${collection.collection_name} ${index + 1}`, index + 1)
-  )}
+      <CollectionGrid
+        $itemsCount={
+          [
+            collection.image_name1,
+            collection.image_name2,
+            collection.image_name3,
+          ].filter(img => img && !isImageFailed(img)).length
+        }
+      >
+        {[
+          collection.image_name1,
+          collection.image_name2,
+          collection.image_name3,
+        ]
+          .filter(img => img && !isImageFailed(img)) // Фільтруємо неіснуючі/помилкові зображення
+          .map((img, index) =>
+            renderImage(
+              img,
+              `${collection.collection_name} ${index + 1}`,
+              index + 1
+            )
+          )}
       </CollectionGrid>
-
       {collection.image_name4 &&
         collection.title1 &&
         !isImageFailed(collection.image_name4) && (
           <CollectionBlock>
-            {renderImage(collection.image_name4, collection.title1, 4)}
+            <ImageBlock>
+              {renderImage(collection.image_name4, collection.title1, 4)}
+            </ImageBlock>
             <TextBlock>
               <h3>{collection.title1}</h3>
-              <p>Additional description text here...</p>
             </TextBlock>
           </CollectionBlock>
         )}
 
-      {/* Додатковий блок для image_name41 та title11 */}
       {collection.image_name41 &&
         collection.title11 &&
         !isImageFailed(collection.image_name41) && (
           <CollectionBlock>
-            {renderImage(collection.image_name41, collection.title11, 41)}
-            <TextBlock>
-              <h3>{collection.title11}</h3>
-              <p>Additional description text here...</p>
-            </TextBlock>
+            {collection.title11 && (
+              <TextBlock>
+                <h3>{collection.title11}</h3>
+              </TextBlock>
+            )}
+            <ImageBlock>
+              {renderImage(collection.image_name41, collection.title11, 41)}
+            </ImageBlock>
           </CollectionBlock>
         )}
-
-      <CollectionGrid cols={5}>
+      <CollectionImageWrapper>
         {[5, 6, 7, 8, 9].map(num => {
           const img = collection[`image_name${num}` as keyof CollectionData] as
             | string
             | undefined;
-          return renderImage(img, `${collection.collection_name} ${num}`, num);
+          return img
+            ? renderImage(img, `${collection.collection_name} ${num}`, num)
+            : null;
         })}
-      </CollectionGrid>
-
+      </CollectionImageWrapper>
       {isModalOpen && (
         <Modal onClose={closeModal}>
           <div

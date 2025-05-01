@@ -106,15 +106,34 @@ display: flex;
 
 @media screen and (min-width: 1440px){
 display: flex;
-        width: 1440px;
+        max-width: 1440px;
         margin: 0 auto;
         flex-direction: row;
-        padding: 150px 0px 150px 0px;
+        padding: 150px 16px 150px 16px;
         justify-content: space-between;
         align-items: flex-start;
 
 }
 `;
+
+export const CollectionTextWrapper = styled.div`
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  @media screen and (min-width: 744px){
+padding: 16px;
+
+}
+
+@media screen and (min-width: 1440px){
+
+ max-width: 1440px;
+  margin: 80px auto;
+}
+ 
+  `;
 
 export const CollectionImage = styled.img`
   width: 100%;
@@ -138,15 +157,17 @@ export const CollectionImage = styled.img`
 }
 `;
 
-export const CollectionGrid = styled.div<{ cols?: number }>`
+export const CollectionGrid = styled.div<{ $itemsCount?: number }>`
   display: grid;
-  grid-template-columns: repeat(${props => props.cols || 3}, 1fr);
-  gap: 1rem;
+  width: 100%;
+ gap: 5px;
   margin-bottom: 3rem;
-  
+
   img {
     width: 100%;
     height: auto;
+    max-height: 80vh;
+    object-fit: cover;
     cursor: pointer;
     transition: transform 0.3s;
     
@@ -155,63 +176,180 @@ export const CollectionGrid = styled.div<{ cols?: number }>`
     }
   }
 
-@media screen and (min-width: 744px){
+  /* Мобільні пристрої - завжди 1 колонка */
+  @media screen and (max-width: 743px) {
+    grid-template-columns: 1fr;
+  }
 
+  /* Планшети - адаптивна кількість колонок */
+  @media screen and (min-width: 744px) {
+    grid-template-columns: ${({ $itemsCount }) => {
+      if (!$itemsCount) return 'repeat(2, 1fr)';
+      return $itemsCount >= 3 ? 'repeat(3, 1fr)' :
+       `repeat(${$itemsCount}, 1fr)`;
+    }};
+  }
 
-}
-
-@media screen and (min-width: 1440px){
-
-
-}
+  /* Десктопи - адаптивна кількість колонок */
+  @media screen and (min-width: 1440px) {
+    grid-template-columns: ${({ $itemsCount }) => {
+      if (!$itemsCount) return 'repeat(3, 1fr)';
+      return $itemsCount >= 3 ? 'repeat(3, 1fr)' : `repeat(${$itemsCount}, 1fr)`;
+    }};
+  }
 `;
 
-export const CollectionBlock = styled.div`
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 3rem;
-  
-  img {
-    width: 50%;
-    height: auto;
-    cursor: pointer;
-  }
-  
+export const CollectionImageWrapper = styled.div`
+  display: grid;
+  width: 100%;
+  margin: 32px 0;
+ gap: 5px;
 
-@media screen and (min-width: 744px){
-  flex-direction: column;
+  .image-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+   
+    aspect-ratio: 2;
     
     img {
       width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+  }
+
+  /* Мобільні пристрої */
+  @media screen and (max-width: 743px) {
+    grid-template-columns: 1fr;
+    
+    .image-container {
+      aspect-ratio: 2;
+    }
+  }
+
+  /* Планшети */
+  @media screen and (min-width: 744px) and (max-width: 1439px) {
+    grid-template-columns: repeat(2, 1fr);
+    
+    .image-container:last-child:nth-child(odd) {
+      grid-column: span 2;
+      max-width: 50%;
+      justify-self: center;
+    }
+  }
+
+  /* Десктопи */
+  @media screen and (min-width: 1440px) {
+    grid-template-columns: repeat(3, 1fr);
+
+    /* Спеціальне правило для двох останніх картинок */
+    .image-container:nth-last-child(2),
+    .image-container:last-child {
+      grid-column: span 1; /* Залишаємо в одній колонці */
+      width: 150%; /* Збільшуємо ширину на 50% */
+      margin-left: 0%; /* Компенсуємо збільшення для вирівнювання */
+      margin-right: -100%;
     }
 
+    /* Вирівнювання для першої картинки в парі */
+    .image-container:nth-last-child(2) {
+      justify-self: start; /* Вирівнюємо праворуч */
+    }
+
+    /* Вирівнювання для другої картинки в парі */
+    .image-container:last-child {
+      justify-self: end; /* Вирівнюємо ліворуч */
+    }
+
+    /* Стиль для останньої картинки, якщо вона одна */
+    .image-container:last-child:nth-child(3n+1) {
+      grid-column: span 3;
+      max-width: 33.33%;
+      justify-self: end;
+      margin: 0; /* Скидаємо відступи */
+    }
+  }
+`; 
+
+export const CollectionBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 2rem 0;
+.image-container {
+width: 100%;
 }
 
-@media screen and (min-width: 1440px){
+  @media screen and (min-width: 744px) {
+    flex-direction: row;
+    align-items: center;
+    min-height: 50vh;
+    .image-container {
+      max-width: 744px;
+      }
+  }
 
-
+  @media screen and (min-width: 1440px){
+max-width: 1440px;
+margin: 0 auto;
 }
 `;
 
 export const TextBlock = styled.div`
-  width: 50%;
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+
   h3 {
-    margin-bottom: 1rem;
     font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
-  
+
   p {
     line-height: 1.6;
   }
-  
-@media screen and (min-width: 744px){
 
+  @media screen and (min-width: 744px) {
+  display: flex;
+        width: 50%;
+        // padding: 2rem;
+        text-align: left;
+        align-items: center;
+        margin: 0 auto;
+  }
+`;
 
-}
+export const ImageBlock = styled.div`
+  width: 100%;
+  overflow: hidden;
 
-@media screen and (min-width: 1440px){
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.3s;
 
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
 
-}
+  @media screen and (min-width: 744px) {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
