@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const InfoContainer = styled.div`
 margin: 0 auto;
 margin-top: 100px;
-height: 100vh;
+height: 100%;
 max-width: 1440px;
     padding: 16px 32px;
 display: flex;
@@ -20,12 +20,12 @@ margin-bottom: 60%;
 
 margin: 0 auto;
 margin-top: 100px;
-height: 100vh;
+height: 100%;
 max-width: 1440px;
     padding: 16px 0px;
 display: flex;
 flex-direction: column;
-margin-bottom: 400px;
+margin-bottom: 100px;
 }
 
 `;
@@ -185,7 +185,7 @@ export const InfoColumnContainer = styled.div`
     align-items: flex-start;
     justify-content: center;
     width: 100%;
-    height: 100vh;
+    height: 100%;
 margin-bottom: 20%;
 @media screen and (min-width: 744px){
 
@@ -194,7 +194,7 @@ margin-bottom: 20%;
 
 @media screen and (min-width: 1440px){
     width: 100%;
-    height: 100vh;
+    height: 100%;
 margin-bottom: 10%;
 
 }
@@ -202,7 +202,7 @@ margin-bottom: 10%;
 
 
 export const Border = styled.p`
-  padding: 0px auto 50px auto;
+  padding: 0px auto 0px auto;
   width: 100%;
 border: 1px solid #d9d9d9;
   margin: 0 auto;

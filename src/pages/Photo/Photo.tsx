@@ -9,12 +9,11 @@ import {
   WorkTextFilter,
   WorkTitel,
   WorkTitelContainer,
-  NotFoundWraperr,
-  NotFoundText,
 } from '../Work/Work.styled';
 import { supabase } from '../../supabaseClient';
 import { Border } from '../../components/Footer/Footer.styled';
 import WorkItemComponent from '../../components/WorkItemComponent/WorkItemComponent';
+import Loading from '../../assets/video/logo_animated_hq.webm';
 
 export type WorkItemData = {
   id: string;
@@ -74,9 +73,7 @@ const Photo: React.FC = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setCurrentQuote(quotes[randomIndex]);
     }
-  }, [quotes]); 
-
-
+  }, [quotes]);
 
   return (
     <WorkContainer>
@@ -107,17 +104,28 @@ const Photo: React.FC = () => {
             <WorkItemComponent key={work.id} work={work} />
           ))
         ) : (
-          <NotFoundWraperr>
-            <Border />
-            <NotFoundText>
-              404
-              <br />
-              NOT FOUND
-            </NotFoundText>
-          </NotFoundWraperr>
+          <div
+            style={{
+              width: '100%',
+              height: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#000',
+            }}
+          >
+            <video
+              src={Loading}
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{ width: '150px', height: '150px' }}
+            />
+          </div>
         )}
       </WorkPhotoWrapp>
-         <Border />
+      <Border />
       {currentQuote && (
         <WorkDescriptionWrapp>
           <WorkDescription>{currentQuote.text}</WorkDescription>
@@ -130,4 +138,4 @@ const Photo: React.FC = () => {
   );
 };
 
-export default Photo
+export default Photo;
