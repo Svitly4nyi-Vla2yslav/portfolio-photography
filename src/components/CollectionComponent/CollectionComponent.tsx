@@ -27,7 +27,7 @@ export interface CollectionData {
   description: string;
   folder: string;
   [key: string]: any;
-  // Main images
+  // Main media (can be image or video)
   image_name: string;
   image_name1?: string;
   image_name2?: string;
@@ -40,7 +40,7 @@ export interface CollectionData {
   image_name9?: string;
   image_name41?: string;
 
-  // Titles for images
+  // Titles for media
   image_name_title?: string;
   image_name1_title?: string;
   image_name2_title?: string;
@@ -66,34 +66,42 @@ const CollectionComponent: React.FC<{
   collections: CollectionData[];
 }> = ({ collection }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState({
+  const [currentMedia, setCurrentMedia] = useState({
     url: '',
+    type: 'image', // 'image' or 'video'
     altText: '',
     description: '',
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+  const [failedMedia, setFailedMedia] = useState<Set<string>>(new Set());
   const topRef = React.useRef<HTMLDivElement>(null);
 
-  const getImageUrl = (imageName: string) => {
-    return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${collection.folder}/${imageName}`;
+  const getMediaUrl = (mediaName: string) => {
+    return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${collection.folder}/${mediaName}`;
   };
 
-  const handleImageError = (imageName: string) => {
-    setFailedImages(prev => new Set(prev).add(imageName));
+  const handleMediaError = (mediaName: string) => {
+    setFailedMedia(prev => new Set(prev).add(mediaName));
   };
 
-  const isImageFailed = (imageName: string) => {
-    return failedImages.has(imageName);
+  const isMediaFailed = (mediaName: string) => {
+    return failedMedia.has(mediaName);
+  };
+
+  const getMediaType = (mediaName: string): 'image' | 'video' => {
+    const videoExtensions = ['.mp4', '.webm', '.mov'];
+    return videoExtensions.some(ext => mediaName.toLowerCase().endsWith(ext)) 
+      ? 'video' 
+      : 'image';
   };
 
   useEffect(() => {
-    const loadImages = async () => {
+    const loadMedia = async () => {
       try {
-        setIsLoading(true); // Додайте це, щоб показувати завантаження при зміні колекції
-        setFailedImages(new Set()); // Скидаємо помилкові зображення для нової колекції
+        setIsLoading(true);
+        setFailedMedia(new Set());
 
-        const imagesToLoad = [
+        const mediaToLoad = [
           collection.image_name,
           collection.image_name1,
           collection.image_name2,
@@ -108,37 +116,44 @@ const CollectionComponent: React.FC<{
         ].filter(Boolean) as string[];
 
         await Promise.all(
-          imagesToLoad.map(url => {
+          mediaToLoad.map(mediaName => {
             return new Promise<void>(resolve => {
-              const img = new Image();
-              img.src = getImageUrl(url);
-              img.onload = () => resolve();
-              img.onerror = () => {
-                handleImageError(url);
+              const mediaType = getMediaType(mediaName);
+              if (mediaType === 'image') {
+                const img = new Image();
+                img.src = getMediaUrl(mediaName);
+                img.onload = () => resolve();
+                img.onerror = () => {
+                  handleMediaError(mediaName);
+                  resolve();
+                };
+              } else {
+                // For videos, we can't preload the same way, so we just resolve
                 resolve();
-              };
+              }
             });
           })
         );
 
         setIsLoading(false);
       } catch (error) {
-        console.error('Error loading images:', error);
+        console.error('Error loading media:', error);
         setIsLoading(false);
       }
     };
 
-    loadImages();
-  }, [collection.id]); // Змініть залежності на весь об'єкт колекції
+    loadMedia();
+  }, [collection.id]);
 
-  // Функція для блокування скролу
+  const openModal = (mediaName: string, mediaKey: string, altText: string) => {
+    if (isMediaFailed(mediaName)) return;
 
-  const openModal = (imageName: string, imageKey: string, altText: string) => {
-    if (isImageFailed(imageName)) return;
-
-    const descriptionKey = `${imageKey}_title` as keyof CollectionData;
-    setCurrentImage({
-      url: getImageUrl(imageName),
+    const descriptionKey = `${mediaKey}_title` as keyof CollectionData;
+    const mediaType = getMediaType(mediaName);
+    
+    setCurrentMedia({
+      url: getMediaUrl(mediaName),
+      type: mediaType,
       altText: altText,
       description: collection[descriptionKey] || '',
     });
@@ -149,13 +164,39 @@ const CollectionComponent: React.FC<{
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    return () => {
-      // На випадок розмонтування компонента
-      document.body.classList.remove('modal-open');
-      document.body.style.top = '';
-    };
-  }, []);
+  const renderMedia = (
+    mediaName: string | undefined,
+    mediaKey: string,
+    altText: string,
+    index: number,
+    styles = {}
+  ) => {
+    if (!mediaName || isMediaFailed(mediaName)) return null;
+
+    const mediaType = getMediaType(mediaName);
+    const mediaUrl = getMediaUrl(mediaName);
+
+    return (
+      <div className="image-container" key={`${mediaName}-${index}`}>
+        {mediaType === 'image' ? (
+          <img
+            src={mediaUrl}
+            alt={altText}
+            onClick={() => openModal(mediaName, mediaKey, altText)}
+            onError={() => handleMediaError(mediaName)}
+            style={styles}
+          />
+        ) : (
+          <video
+            src={mediaUrl}
+            controls
+            onClick={() => openModal(mediaName, mediaKey, altText)}
+            style={styles}
+          />
+        )}
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -180,28 +221,6 @@ const CollectionComponent: React.FC<{
       </div>
     );
   }
-
-  const renderImage = (
-    imageName: string | undefined,
-    imageKey: string, // Ключ для пошуку опису (наприклад, "image_name1")
-    altText: string, // Альтернативний текст
-    index: number,
-    styles = {}
-  ) => {
-    if (!imageName || isImageFailed(imageName)) return null;
-
-    return (
-      <div className="image-container" key={`${imageName}-${index}`}>
-        <img
-          src={getImageUrl(imageName)}
-          alt={altText}
-          onClick={() => openModal(imageName, imageKey, altText)}
-          onError={() => handleImageError(imageName)}
-          style={styles}
-        />
-      </div>
-    );
-  };
 
   return (
     <CollectionContainer ref={topRef}>
@@ -229,7 +248,7 @@ const CollectionComponent: React.FC<{
         </CollectionWrapper>
       </CollectionHeader>
 
-      {renderImage(
+      {renderMedia(
         collection.image_name,
         'image_name',
         collection.collection_name,
@@ -246,7 +265,7 @@ const CollectionComponent: React.FC<{
             collection.image_name1,
             collection.image_name2,
             collection.image_name3,
-          ].filter(img => img && !isImageFailed(img)).length
+          ].filter(media => media && !isMediaFailed(media)).length
         }
       >
         {[
@@ -254,11 +273,11 @@ const CollectionComponent: React.FC<{
           collection.image_name2,
           collection.image_name3,
         ]
-          .filter(img => img && !isImageFailed(img)) // Фільтруємо неіснуючі/помилкові зображення
-          .map((img, index) =>
-            renderImage(
-              img,
-              `image_name${index + 1}`, // Ключ для пошуку опису
+          .filter(media => media && !isMediaFailed(media))
+          .map((media, index) =>
+            renderMedia(
+              media,
+              `image_name${index + 1}`,
               `${collection.collection_name} ${index + 1}`,
               index + 1
             )
@@ -266,13 +285,13 @@ const CollectionComponent: React.FC<{
       </CollectionGrid>
       {collection.image_name4 &&
         collection.title1 &&
-        !isImageFailed(collection.image_name4) && (
+        !isMediaFailed(collection.image_name4) && (
           <CollectionBlock>
             <ImageBlock>
-              {renderImage(
+              {renderMedia(
                 collection.image_name4,
-                'image_name4', // Ключ
-                collection.title1 || '', // Alt текст
+                'image_name4',
+                collection.title1 || '',
                 4
               )}
             </ImageBlock>
@@ -284,7 +303,7 @@ const CollectionComponent: React.FC<{
 
       {collection.image_name41 &&
         collection.title11 &&
-        !isImageFailed(collection.image_name41) && (
+        !isMediaFailed(collection.image_name41) && (
           <CollectionBlock>
             {collection.title11 && (
               <TextBlock>
@@ -292,10 +311,10 @@ const CollectionComponent: React.FC<{
               </TextBlock>
             )}
             <ImageBlock>
-              {renderImage(
+              {renderMedia(
                 collection.image_name41,
-                'image_name41', // Ключ
-                collection.title11 || '', // Alt текст
+                'image_name41',
+                collection.title11 || '',
                 41
               )}
             </ImageBlock>
@@ -303,13 +322,13 @@ const CollectionComponent: React.FC<{
         )}
       <CollectionImageWrapper>
         {[5, 6, 7, 8, 9].map(num => {
-          const img = collection[`image_name${num}` as keyof CollectionData] as
+          const media = collection[`image_name${num}` as keyof CollectionData] as
             | string
             | undefined;
-          return img
-            ? renderImage(
-                img,
-                `image_name${num}`, // Ключ
+          return media
+            ? renderMedia(
+                media,
+                `image_name${num}`,
                 `${collection.collection_name} ${num}`,
                 num
               )
@@ -325,7 +344,7 @@ const CollectionComponent: React.FC<{
               alignItems: 'center',
             }}
           >
-                 <button
+            <button
               onClick={closeModal}
               style={{
                 position: 'fixed',
@@ -341,16 +360,31 @@ const CollectionComponent: React.FC<{
             >
               ✖
             </button>
-            <img
-              src={currentImage.url}
-              alt={currentImage.altText}
-              style={{
-                maxWidth: '100%',
-                maxHeight: '80vh',
-                objectFit: 'contain',
-                marginBottom: '20px',
-              }}
-            />
+            
+            {currentMedia.type === 'image' ? (
+              <img
+                src={currentMedia.url}
+                alt={currentMedia.altText}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                  marginBottom: '20px',
+                }}
+              />
+            ) : (
+              <video
+                src={currentMedia.url}
+                controls
+                autoPlay
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                  marginBottom: '20px',
+                }}
+              />
+            )}
 
             <div
               style={{
@@ -360,9 +394,9 @@ const CollectionComponent: React.FC<{
                 maxWidth: '800px',
               }}
             >
-              {currentImage.description && (
+              {currentMedia.description && (
                 <p style={{ marginBottom: '20px' }}>
-                  {currentImage.description}
+                  {currentMedia.description}
                 </p>
               )}
               {collection.work_title && (
