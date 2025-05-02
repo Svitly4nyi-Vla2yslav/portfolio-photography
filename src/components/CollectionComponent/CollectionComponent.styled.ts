@@ -169,7 +169,7 @@ export const CollectionImage = styled.img`
   transition: transform 0.3s;
   
   &:hover {
-    transform: scale(1.01);
+    // transform: scale(1.01);
   }
 
 @media screen and (min-width: 744px){
@@ -198,7 +198,7 @@ export const CollectionGrid = styled.div<{ $itemsCount?: number }>`
     transition: transform 0.3s;
     
     &:hover {
-      transform: scale(1.02);
+      // transform: scale(1.02);
     }
   }
 
@@ -246,7 +246,7 @@ export const CollectionImageWrapper = styled.div`
       transition: transform 0.3s ease;
       
       &:hover {
-        transform: scale(1.03);
+        // transform: scale(1.03);
       }
     }
   }
@@ -373,7 +373,7 @@ export const ImageBlock = styled.div`
     transition: transform 0.3s;
 
     &:hover {
-      transform: scale(1.02);
+      // transform: scale(1.02);
     }
   }
 

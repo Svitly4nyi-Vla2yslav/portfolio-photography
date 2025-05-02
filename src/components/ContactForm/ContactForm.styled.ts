@@ -9,31 +9,43 @@ export const FormContainer = styled.div`
 export const FormGroup = styled.div`
 `
 
-export const Input = styled.input`
-font-family: var(--third-family);
-font-weight: 600;
-font-size: 16px;
-color: #4d4d4d;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  hasError?: boolean;
+}
+
+export const Input = styled.input<InputProps>`
+  font-family: var(--third-family);
+  font-weight: 600;
+  font-size: 16px;
+  color: rgb(250, 250, 250);
   width: 100%;
-  padding: 10px;
+  padding: 13px 20px;
   margin: 5px 0;
   border-radius: 4px;
-  padding: 13px 20px;
   background: #0c0c0c;
   border: none;
-`
+  border: 1px solid ${props => props.hasError ? '#ff4d4f' : 'transparent'};
+  transition: border-color 0.3s;
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.hasError ? '#ff4d4f' : '#1890ff'};
+  }
+`;
 
 export const Textarea = styled.textarea`
 font-family: var(--third-family);
 font-weight: 600;
 font-size: 16px;
-color: #4d4d4d;
+color:rgb(255, 255, 255);
   width: 100%;
   padding: 20px;
   margin: 5px 0;
   border: none;
   height: 100px;
   background: #0d0d0d;
+   resize: none;
+   overflow-y: auto; 
 `;
 
 export const Button = styled.button`

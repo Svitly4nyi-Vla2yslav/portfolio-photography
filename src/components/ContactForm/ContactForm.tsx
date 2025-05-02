@@ -10,7 +10,7 @@ import {
   Input,
   Textarea,
   Error,
-  Button
+  Button,
 } from './ContactForm.styled';
 
 const ContactForm: React.FC = () => {
@@ -20,15 +20,28 @@ const ContactForm: React.FC = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const [touched, setTouched] = useState({
+    fullName: false,
+    email: false,
+  });
+
+  const handleBlur = (field: 'fullName' | 'email') => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    setTouched({ fullName: true, email: true });
+  
     if (!fullName || !email) {
       setError('Full Name and Email are required');
       return;
     }
-
+  
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
     try {
       const { error } = await supabase.from('contact_messages').insert([
         {
@@ -48,10 +61,15 @@ const ContactForm: React.FC = () => {
       setSubject('');
       setMessage('');
       setError(null);
+      setTouched({ fullName: false, email: false });
     } catch (error) {
       setError('Something went wrong. Please try again later.');
       setSuccess(false);
     }
+  };
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
   return (
@@ -65,17 +83,31 @@ const ContactForm: React.FC = () => {
             placeholder="Full Name (required)"
             value={fullName}
             onChange={e => setFullName(e.target.value)}
-            required
+            onBlur={() => handleBlur('fullName')}
+            hasError={touched.fullName && !fullName}
           />
+          {touched.fullName && !fullName && (
+            <Error>Full Name is required</Error>
+          )}
         </FormGroup>
         <FormGroup>
           <Input
-            type="email"
+           
             placeholder="Email (required)"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            required
+            onBlur={() => handleBlur('email')}
+            hasError={
+              !!(
+                (touched.email && !email) ||
+                (touched.email && email && !validateEmail(email))
+              )
+            }
           />
+          {touched.email && !email && <Error>Email is required</Error>}
+          {touched.email && email && !validateEmail(email) && (
+            <Error>Please enter a valid email address</Error>
+          )}
         </FormGroup>
         <FormGroup>
           <Input

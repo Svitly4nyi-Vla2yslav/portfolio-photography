@@ -11,13 +11,12 @@ import {
   InfoTitle,
   ListInfo,
   UnderlinedText,
+  WorkDescription,
+  WorkDescriptionWrapp,
+  WorkTextDescription,
   WrapperLink,
 } from './Info.styled';
-import {
-  WorkDescriptionWrapp,
-  WorkDescription,
-  WorkTextDescription,
-} from '../Work/Work.styled';
+
 import { Quote } from '../Work/Work';
 import { supabase } from '../../supabaseClient';
 
@@ -65,7 +64,11 @@ const Info: React.FC = () => {
         </InfoItem>{' '}
         <InfoItem>
           <InfoText>Location</InfoText>
-          <InfoLink href="https://maps.app.goo.gl/b7UCDY41c7FuzzFC6">
+          <InfoLink
+            href="https://maps.app.goo.gl/b7UCDY41c7FuzzFC6"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Toronto, ON, CA
           </InfoLink>
         </InfoItem>{' '}
@@ -107,10 +110,18 @@ const Info: React.FC = () => {
 
         <InfoText>Links</InfoText>
         <WrapperLink>
-          <UnderlinedText href="https://drive.google.com/file/d/1D69U9qWZQzXH7Pu58QtCvbdFzv6qZgnV/view?usp=sharing">
+          <UnderlinedText
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://drive.google.com/file/d/1D69U9qWZQzXH7Pu58QtCvbdFzv6qZgnV/view?usp=sharing"
+          >
             Resume
           </UnderlinedText>
-          <UnderlinedText href="https://www.youtube.com/watch?v=LUzVjS18PjI">
+          <UnderlinedText
+            href="https://www.youtube.com/watch?v=LUzVjS18PjI"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Latest ShowReel
           </UnderlinedText>
         </WrapperLink>

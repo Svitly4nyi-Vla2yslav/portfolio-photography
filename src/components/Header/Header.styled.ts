@@ -72,19 +72,19 @@ export const NavList = styled.ul`
 `;
 
 export const NavItem = styled.li`
+color:rgb(49, 46, 46);
   a {
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.8);
+   color: #808080;
    font-family: var(--font-family);
 font-weight: 600;
 font-size: 14px;
 text-align: center;
-color: #fff;
     transition: color 0.3s ease;
 
     &:hover,
     &.active {
-      color:rgb(225, 218, 218);
+      color:rgb(255, 255, 255);
     }
   }
 `;
@@ -96,12 +96,17 @@ font-weight: 600;
 font-size: 14px;
 text-align: center;
 color: #fff;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease-in-out;
+  position: relative;
+
+    color: #808080;
+  cursor: pointer;
+
+  transition: all 0.4s ease-in-out;
   position: relative;
 
   &:hover {
-    color: #808080;
-    transform: scale(1.1);
+    color:rgb(255, 255, 255);
   }
 
   &::bevore {
@@ -116,7 +121,7 @@ color: #fff;
   }
 
   &.active {
-    color: #808080;
+   color:rgb(255, 255, 255);
     &::after {
       width: 100%;
     }
@@ -124,5 +129,6 @@ color: #fff;
 
   &:hover::after {
     width: 100%;
+    color:rgb(255, 255, 255);
   }
 `;

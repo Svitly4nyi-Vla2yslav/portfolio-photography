@@ -9,10 +9,10 @@ max-width: 1440px;
     padding: 16px 32px;
 display: flex;
 flex-direction: column;
-margin-bottom: 170%;
+margin-bottom: 0%;
 
 @media screen and (min-width: 744px){
-margin-bottom: 60%;
+margin-bottom: 0%;
 
 }
 
@@ -25,7 +25,7 @@ max-width: 1440px;
     padding: 16px 0px;
 display: flex;
 flex-direction: column;
-margin-bottom: 100px;
+margin-bottom: 0px;
 }
 
 `;
@@ -68,7 +68,7 @@ display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-margin-bottom: 150px;
+margin-bottom: 50px;
 
 }
 
@@ -155,7 +155,7 @@ margin-bottom: 30px;
 
 @media screen and (min-width: 1440px){
 font-size: 16px;
-margin-bottom: 50px;
+margin-bottom: 0px;
 
 }
 
@@ -186,7 +186,7 @@ export const InfoColumnContainer = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
-margin-bottom: 20%;
+margin-bottom: 10%;
 @media screen and (min-width: 744px){
 
 
@@ -195,7 +195,7 @@ margin-bottom: 20%;
 @media screen and (min-width: 1440px){
     width: 100%;
     height: 100%;
-margin-bottom: 10%;
+margin-bottom: 5%;
 
 }
 `;
@@ -249,4 +249,62 @@ line-height: 162%;
 text-decoration: underline;
 text-decoration-skip-ink: none;
 color: #fff;
+`;
+
+export const WorkDescriptionWrapp = styled.div`
+    display: flex;
+    height: 100px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    max-width: 70%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+@media screen and (min-width: 744px){
+height: 200px;
+
+}
+
+@media screen and (min-width: 1440px){
+
+
+}
+`;
+
+export const WorkDescription = styled.h3`
+font-family: var(--font-family);
+font-weight: 600;
+font-size: 18px;
+text-align: center;
+color: #fff;
+
+@media screen and (min-width: 744px){
+
+font-size: 32px;
+}
+
+@media screen and (min-width: 1440px){
+
+
+}
+`;
+
+export const WorkTextDescription = styled.p`
+font-family: var(--second-family);
+font-weight: 400;
+font-size: 12px;
+text-align: center;
+color: #808080;
+@media screen and (min-width: 744px){
+font-size: 16px;
+
+}
+
+@media screen and (min-width: 1440px){
+
+
+}
 `;

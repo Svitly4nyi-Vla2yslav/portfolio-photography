@@ -33,7 +33,11 @@ const Contact: React.FC = () => {
         </SocialContainerLink>
         <LocationContainer>
           <TextContact>Location</TextContact>
-          <LocationLink href="https://maps.app.goo.gl/b7UCDY41c7FuzzFC6">
+          <LocationLink
+            href="https://maps.app.goo.gl/b7UCDY41c7FuzzFC6"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Toronto, ON, CA
           </LocationLink>
         </LocationContainer>

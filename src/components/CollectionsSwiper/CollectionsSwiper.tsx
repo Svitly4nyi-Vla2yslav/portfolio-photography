@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Left from"../../assets/icons/icon_left.svg"
+import Right from"../../assets/icons/icon_right.svg"
 
 const NavigationWrapper = styled.div`
   position: relative;
@@ -18,8 +20,7 @@ const NavigationWrapper = styled.div`
 
 const ArrowButton = styled.button`
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+border: none;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -32,10 +33,17 @@ const ArrowButton = styled.button`
   transition: all 0.3s;
 
   &:hover {
-    background: rgba(59, 58, 58, 0.9);
-    transform: scale(1.1);
+    color: rgba(98, 98, 98, 0.9);
+   fill: rgba(98, 98, 98, 0.9);
   }
 `;
+
+export const ArrowImage = styled.img`
+  width: 20px;  
+  height: 33px;
+
+
+  `;
 
 const CollectionName = styled.div`
   color: white;
@@ -70,13 +78,13 @@ const CollectionSlider: React.FC<CollectionSliderProps> = ({
   return (
     <NavigationWrapper>
       <ArrowButton onClick={() => navigateToCollection(currentIndex - 1)}>
-        ←
+     <ArrowImage src={Left} alt="Left Arrow" />
       </ArrowButton>
       
       <CollectionName>{collectionName}</CollectionName>
       
       <ArrowButton onClick={() => navigateToCollection(currentIndex + 1)}>
-        →
+      <ArrowImage src={Right} alt="Left Arrow" />
       </ArrowButton>
     </NavigationWrapper>
   );

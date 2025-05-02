@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from './components/Layout/Layout';
@@ -10,19 +11,23 @@ import Info from './pages/Info/Info';
 import CollectionPage from './pages/CollectionPage/CollectionPage';
 
 const AnimatedPage = ({ children }: { children: React.ReactNode }) => {
+  // Автоматичне прокручування до верху при монтажі компонента
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 100 }}  // Більший зсув знизу (100px замість 20)
-      animate={{ opacity: 1, y: 0 }}    // Фінальна позиція
-      exit={{ opacity: 0, y: -100 }}    // Більший зсув вгору (-100px замість -20)
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -100 }}
       transition={{ 
-        duration: 0.7,                 // Трохи довша анімація
-        ease: [0.22, 1, 0.36, 1],      // Більш динамічна крива анімації
+        duration: 0.7,
+        ease: [0.22, 1, 0.36, 1],
       }}
       style={{
-        // position: 'absolute',          // Важливо для ефекту "підміни"
-        width: '100%',                 // Щоб займав всю ширину
-        top: 0,                        // Фіксуємо позицію
+        width: '100%',
+        top: 0,
       }}
     >
       {children}
@@ -32,6 +37,11 @@ const AnimatedPage = ({ children }: { children: React.ReactNode }) => {
 
 export const App: React.FC = () => {
   const location = useLocation();
+
+  // Додаткове прокручування до верху при зміні маршруту
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="wait">
