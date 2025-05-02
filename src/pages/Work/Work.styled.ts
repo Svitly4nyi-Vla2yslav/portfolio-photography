@@ -111,7 +111,7 @@ export const WorkTextFilter = styled.a`
 export const WorkItemContainer = styled.div`
   cursor: pointer;
   width: 100%;
-  height: 100%;
+  height: 200px;
   position: relative;
   overflow: hidden;
   margin-bottom: 10px;
@@ -296,7 +296,7 @@ export const WorkImage = styled.img`
 //     opacity: 0;
 //     transition: opacity 0.6s ease-in-out;
 //     z-index: 1;
-//   }
+//   }😄
 
 //   &:hover::after {
 //     opacity: 1;
