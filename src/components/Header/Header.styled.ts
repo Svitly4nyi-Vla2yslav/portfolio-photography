@@ -5,6 +5,10 @@ export const NavbarContainer = styled.header<{ $isScrolled: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+   background: ${({ $isScrolled }) =>
+    $isScrolled ? 'rgb(0, 0, 0)' : 'transparent'};
+  box-shadow: ${({ $isScrolled }) =>
+    $isScrolled ? '0 4px 15px rgba(0, 0, 0, 0)' : 'none'};
   padding: 1rem 2rem;
   position: fixed;
   top: 0;
@@ -36,6 +40,7 @@ export const HeaderWrapper = styled.div`
     width: 1440px;
     margin: 0 auto;
     justify-content: space-between;
+    align-items: center;
 
 `;
 export const Logo = styled(NavLink)`
@@ -70,21 +75,25 @@ export const NavItem = styled.li`
   a {
     text-decoration: none;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
+   font-family: var(--font-family);
+font-weight: 600;
+font-size: 14px;
+text-align: center;
+color: #fff;
     transition: color 0.3s ease;
 
     &:hover,
     &.active {
-      color: #808080;
+      color:rgb(225, 218, 218);
     }
   }
 `;
 
 export const StyledNavLink = styled(NavLink)`
   text-decoration: none;
- font-family: var(--second-family);
-font-weight: 500;
-font-size: 24px;
+font-family: var(--font-family);
+font-weight: 600;
+font-size: 14px;
 text-align: center;
 color: #fff;
   transition: all 0.3s ease-in-out;

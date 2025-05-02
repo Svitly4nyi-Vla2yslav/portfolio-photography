@@ -72,22 +72,22 @@ export const WorkTextFilter = styled.a`
   font-weight: 400;
   font-size: 13px;
   line-height: 162%;
-  color: #fff;
+   color: #808080;
   cursor: pointer;
 
   transition: all 0.3s ease-in-out;
   position: relative;
 
   &:hover {
-    color: #808080;
-    transform: scale(1.1);
+    color:rgb(255, 255, 255);
   }
 
  
+
   
 
   &.active {
-    color: #808080;
+    color:rgb(255, 247, 247);
     &::after {
       width: 100%;
     }
@@ -103,6 +103,128 @@ export const WorkTextFilter = styled.a`
 
   @media screen and (min-width: 1440px) {
     // Можна додавати додаткові стилі для великих екранів
+  }
+`;
+
+
+
+export const WorkItemContainer = styled.div`
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  
+  @media screen and (min-width: 744px) {
+    height: 270px;
+  }
+
+  @media screen and (min-width: 1440px) {
+    height: 400px;
+  }
+`;
+
+export const PreviewLayer = styled.div<{ $isVisible: boolean; $imageUrl: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  z-index: 1;
+  will-change: opacity;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+    opacity: ${props => props.$isVisible ? 0 : 1};
+    transition: opacity 0.6s ease-in-out;
+    z-index: 1;
+    pointer-events: none;
+  }
+`;
+
+export const OriginalLayer = styled.div<{ $isVisible: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  z-index: 0;
+  will-change: opacity;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+export const VideoPreview = styled.div<{ $isVisible: boolean; $imageUrl: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease-out;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  z-index: 0;
+  will-change: opacity;
+  background-color: #000;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: ${props => props.$isVisible ? '47%' : '100%'};
+    background: ${props => props.$isVisible 
+      ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%)' 
+      : `url(${props.$imageUrl})`};
+    background-size: cover;
+    background-position: center;
+    transition: all 0.6s ease-in-out;
+    z-index: 1;
+    pointer-events: none;
+  }
+`;
+
+export const ImageDescription = styled.p<{ $isVisible: boolean }>`
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 12px;
+  color: #fff;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transition: opacity 0.4s ease-out;
+  z-index: 2;
+  will-change: opacity;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  
+  @media screen and (min-width: 744px) {
+    font-size: 22px;
   }
 `;
 
@@ -149,60 +271,43 @@ export const WorkImage = styled.img`
 }
 `;
 
-export const ImageDescription = styled.p`
-font-family: var(--font-family);
-font-weight: 600;
-font-size: 12px;
-color: #fff;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  opacity: 0;  // Приховуємо опис за замовчуванням
-  transition: opacity 0.3s ease-in-out;
-@media screen and (min-width: 744px){
-font-size: 22px;
 
-z-index: 1;
-}
+// export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
+//   position: relative;
+//   overflow: hidden;
+//   display: inline-block;
+//   width: 100%;
+//   height: 100%;
+//   transition: all 0.6s ease-in-out;
+//   background-image: url(${props => props.$imageUrl});
+//   background-size: cover;
+//   background-position: center;
+//   z-index: 0;
 
-@media screen and (min-width: 1440px){
+//   img {
+  
+//   }
 
+//   &::after {
+//     content: "";
+//     position: absolute;
+//     inset: 0; /* top: 0; left: 0; right: 0; bottom: 0; */
+//     background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+//     opacity: 0;
+//     transition: opacity 0.6s ease-in-out;
+//     z-index: 1;
+//   }
 
-}
-`;
+//   &:hover::after {
+//     opacity: 1;
+//   }
 
-export const WorkSpannImage = styled.span<{ $imageUrl: string }>`
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-  transition: all 0.6s ease-in-out;
-  background-image: url(${props => props.$imageUrl});
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0; /* top: 0; left: 0; right: 0; bottom: 0; */
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
-    opacity: 0;
-    transition: opacity 0.6s ease-in-out;
-    z-index: 1;
-  }
-
-  &:hover::after {
-    opacity: 1;
-  }
-
-  &:hover ${ImageDescription},
-  &.hover ${ImageDescription} {
-    opacity: 1;
-    z-index: 2;
-  }
-`;
+//   &:hover ${ImageDescription},
+//   &.hover ${ImageDescription} {
+//     opacity: 1;
+//     z-index: 2;
+//   }
+// `;
 
 
 export const PreviewImage = styled.div<{ $src: string }>`
@@ -230,60 +335,9 @@ export const OriginalContent = styled.div`
 
 
 
-interface VideoPreviewProps {
-  $imageUrl: string;
-}
-
-export const VideoPreview = styled.div<VideoPreviewProps>`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  overflow: hidden;
- height:200px;
-  & iframe {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-      &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    pointer-events: none;
-    transition: all 0.6s ease-in-out;
-    background-image: url(${props => props.$imageUrl});
-    background-size: cover;
-    background-position: center;
-    z-index: 1;
-  }
-
-  &:hover::after,
-  &.hover::after {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
-    background-size: fit;
-    background-position: center;
-    height: 47%;
-    overflow: hidden;
-  }
-
-  &:hover ${ImageDescription},
-  &.hover ${ImageDescription} {
-    opacity: 1;
-    z-index: 2;
-  }
 
 
-    @media screen and (min-width: 744px) {
-  height:270px
-  }
 
-  @media screen and (min-width: 1440px) {
-  height: 400px;
-  }
-`;
 export const WorkDescriptionWrapp = styled.div`
     display: flex;
     height: 200px;

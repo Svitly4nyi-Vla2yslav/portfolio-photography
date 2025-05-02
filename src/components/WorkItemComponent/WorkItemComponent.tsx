@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import {
   ImageDescription,
   VideoPreview,
-  WorkSpannImage,
+  // WorkSpannImage,
+  WorkItemContainer,
+  PreviewLayer,
+  OriginalLayer
 } from '../../pages/Work/Work.styled';
 import Loading from '../../assets/video/logo_animated_hq.webm';
 import { WorkItemData } from '../../pages/Work/Work';
@@ -11,6 +14,7 @@ import { WorkItemData } from '../../pages/Work/Work';
 const WorkItemComponent: React.FC<{ work: WorkItemData }> = ({ work }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [isOriginalLoaded, setIsOriginalLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
 
@@ -28,24 +32,36 @@ const WorkItemComponent: React.FC<{ work: WorkItemData }> = ({ work }) => {
   const previewSrc = getPreviewUrl();
 
   useEffect(() => {
+    // Завантажуємо прев'ю
     const img = new Image();
     img.src = previewSrc;
-    img.onload = () => setIsLoading(false);
+    img.onload = () => {
+      setIsLoading(false);
+      
+      // Попередньо завантажуємо оригінал
+      if (!isVideo) {
+        const originalImg = new Image();
+        originalImg.src = src;
+        originalImg.onload = () => setIsOriginalLoaded(true);
+        originalImg.onerror = () => console.error('Failed to preload original image:', src);
+      }
+    };
     img.onerror = () => {
       console.error('Failed to load preview image:', previewSrc);
       setIsLoading(false);
     };
-  }, [previewSrc]);
+  }, [previewSrc, src, isVideo]);
 
   useEffect(() => {
     if (isHovered && isVideo && videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(console.error);
+    } else if (!isHovered && isVideo && videoRef.current) {
+      videoRef.current.pause();
     }
   }, [isHovered, isVideo]);
 
   const handleClick = () => {
-    console.log('Navigating to collection with id:', work.id);
     navigate(`/collections/${work.id}`);
   };
 
@@ -72,58 +88,52 @@ const WorkItemComponent: React.FC<{ work: WorkItemData }> = ({ work }) => {
   }
 
   return (
-    <div
+    <WorkItemContainer
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
       className="work-item"
-      style={{
-        cursor: 'pointer',
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-      }}
     >
-      {!isHovered ? (
-        <WorkSpannImage
-          $imageUrl={previewSrc}
-        >
+      {/* Базовий шар - прев'ю */}
+      <PreviewLayer $isVisible={!isHovered} $imageUrl={previewSrc}>
+        <img
+          src={previewSrc}
+          alt="preview"
+          loading="eager"
+        />
+      </PreviewLayer>
+
+      {/* Шар для зображень (показується при наведенні) */}
+      {!isVideo && (
+        <OriginalLayer $isVisible={isHovered && isOriginalLoaded}>
           <img
-            src={previewSrc}
-            alt="preview"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            loading="eager"
+            src={src}
+            alt="original"
+            loading={isOriginalLoaded ? 'eager' : 'lazy'}
           />
-          <ImageDescription>{title}</ImageDescription>
-        </WorkSpannImage>
-      ) : isVideo ? (
-        <VideoPreview
-          $imageUrl={previewSrc}
-        >
+        </OriginalLayer>
+      )}
+
+      {/* Шар для відео (показується при наведенні) */}
+      {isVideo && isHovered && (
+        <VideoPreview $isVisible={isHovered} $imageUrl={previewSrc}>
           <video
             ref={videoRef}
             src={src}
             muted
             loop
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             preload="auto"
             playsInline
             disablePictureInPicture
           />
-          <ImageDescription>{title}</ImageDescription>
         </VideoPreview>
-      ) : (
-        <WorkSpannImage $imageUrl={src}>
-          <img
-            src={src}
-            alt="original"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            loading="eager"
-          />
-          <ImageDescription>{title}</ImageDescription>
-        </WorkSpannImage>
       )}
-    </div>
+
+      {/* Заголовок (завжди присутній, але з анімацією) */}
+      <ImageDescription $isVisible={isHovered}>
+        {title}
+      </ImageDescription>
+    </WorkItemContainer>
   );
 };
 

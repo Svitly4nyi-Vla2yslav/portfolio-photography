@@ -39,12 +39,15 @@ export const NavItem = styled.li`
   a {
     text-decoration: none;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
-    transition: color 0.3s ease;
+  font-family: var(--second-family);
+font-weight: 500;
+font-size: 24px;
+text-align: center;
+color: #fff;
 
     &:hover,
     &.active {
-      color: #808080;
+      color:rgb(255, 255, 255);
     }
   }
 `;
@@ -61,19 +64,19 @@ export const StyledNavLink = styled(NavLink)`
   padding-left: 30px; /* місце для стрілки */
 
   &::before {
-    content: '➔'; 
+    content: '▶'; 
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%) translateX(-10px); /* трохи зліва */
-    color: #808080;
+    color:rgb(255, 255, 255);
     opacity: 0;
     transition: all 0.3s ease-in-out;
-    font-size: 26px;
+    font-size: 20px;
   }
 
   &:hover {
-    color: #808080;
+
     transform: scale(1.1);
   }
 
@@ -83,6 +86,7 @@ export const StyledNavLink = styled(NavLink)`
   }
 
   &.active {
-    color: #808080;
+  background-color:rgb(255, 255, 255);
+    // color:rgb(255, 255, 255);
   }
 `;

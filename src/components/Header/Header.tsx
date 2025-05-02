@@ -40,9 +40,9 @@ const Header: React.FC = () => {
           <BurgerMenu />
         ) : (
           <>
-            <NavItem>
+            {/* <NavItem>
               <StyledNavLink to="/home">WELCOME</StyledNavLink>
-            </NavItem>
+            </NavItem> */}
             <NavItem>
               <StyledNavLink to="/work">WORK</StyledNavLink>
             </NavItem>{' '}

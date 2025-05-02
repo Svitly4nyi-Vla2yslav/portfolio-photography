@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../Modal/Modal';
 import Loading from '../../assets/video/logo_animated_hq.webm';
 import {
@@ -15,7 +15,9 @@ import {
   CollectionImageWrapper,
   ImageBlock,
   Folder,
+  VimeoContainer,
 } from './CollectionComponent.styled';
+import Player from '@vimeo/player';
 
 export interface CollectionData {
   id: number;
@@ -59,6 +61,19 @@ export interface CollectionData {
 
   // Optional work title from related table
   work_title?: string;
+
+  // Vimeo video IDs (if available)
+  vimeo_id?: string;
+  vimeo_id1?: string;
+  vimeo_id2?: string;
+  vimeo_id3?: string;
+  vimeo_id4?: string;
+  vimeo_id5?: string;
+  vimeo_id6?: string;
+  vimeo_id7?: string;
+  vimeo_id8?: string;
+  vimeo_id9?: string;
+  vimeo_id41?: string;
 }
 
 const CollectionComponent: React.FC<{
@@ -71,13 +86,21 @@ const CollectionComponent: React.FC<{
     type: 'image', // 'image' or 'video'
     altText: '',
     description: '',
+    vimeoId: '',
   });
   const [isLoading, setIsLoading] = useState(true);
   const [failedMedia, setFailedMedia] = useState<Set<string>>(new Set());
   const topRef = React.useRef<HTMLDivElement>(null);
+  const vimeoPlayerRef = useRef<Player | null>(null);
+  const vimeoContainerRef = useRef<HTMLDivElement>(null);
 
   const getMediaUrl = (mediaName: string) => {
     return `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${collection.folder}/${mediaName}`;
+  };
+
+  const getVimeoId = (mediaKey: string): string => {
+    const vimeoKey = mediaKey.replace('image_name', 'vimeo_id');
+    return (collection[vimeoKey as keyof CollectionData] as string) || '';
   };
 
   const handleMediaError = (mediaName: string) => {
@@ -90,8 +113,8 @@ const CollectionComponent: React.FC<{
 
   const getMediaType = (mediaName: string): 'image' | 'video' => {
     const videoExtensions = ['.mp4', '.webm', '.mov'];
-    return videoExtensions.some(ext => mediaName.toLowerCase().endsWith(ext)) 
-      ? 'video' 
+    return videoExtensions.some(ext => mediaName.toLowerCase().endsWith(ext))
+      ? 'video'
       : 'image';
   };
 
@@ -145,17 +168,45 @@ const CollectionComponent: React.FC<{
     loadMedia();
   }, [collection.id]);
 
+  useEffect(() => {
+    if (
+      isModalOpen &&
+      currentMedia.type === 'video' &&
+      currentMedia.vimeoId &&
+      vimeoContainerRef.current
+    ) {
+      // Initialize Vimeo player when modal opens
+      vimeoPlayerRef.current = new Player(vimeoContainerRef.current, {
+        id: parseInt(currentMedia.vimeoId),
+        width: 1280,
+        height: 720,
+        autoplay: true,
+        muted: false,
+      });
+
+      return () => {
+        // Cleanup player when modal closes or changes
+        if (vimeoPlayerRef.current) {
+          vimeoPlayerRef.current.destroy();
+          vimeoPlayerRef.current = null;
+        }
+      };
+    }
+  }, [isModalOpen, currentMedia]);
+
   const openModal = (mediaName: string, mediaKey: string, altText: string) => {
     if (isMediaFailed(mediaName)) return;
 
     const descriptionKey = `${mediaKey}_title` as keyof CollectionData;
     const mediaType = getMediaType(mediaName);
-    
+    const vimeoId = getVimeoId(mediaKey);
+
     setCurrentMedia({
-      url: getMediaUrl(mediaName),
+      url: vimeoId ? '' : getMediaUrl(mediaName),
       type: mediaType,
       altText: altText,
       description: collection[descriptionKey] || '',
+      vimeoId: vimeoId,
     });
     setIsModalOpen(true);
   };
@@ -175,6 +226,48 @@ const CollectionComponent: React.FC<{
 
     const mediaType = getMediaType(mediaName);
     const mediaUrl = getMediaUrl(mediaName);
+    const vimeoId = getVimeoId(mediaKey);
+
+    // If we have Vimeo ID, use Vimeo thumbnail
+    if (vimeoId) {
+      return (
+        <div className="video-container" key={`${vimeoId}-${index}`}>
+          <div
+            onClick={() => openModal(mediaName, mediaKey, altText)}
+            style={{
+              ...styles,
+              backgroundImage: `url(https://vumbnail.com/${vimeoId}.jpg)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              cursor: 'pointer',
+              width: '100%',
+              height: '100%',
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '80px',
+                height: '80px',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="image-container" key={`${mediaName}-${index}`}>
@@ -187,12 +280,37 @@ const CollectionComponent: React.FC<{
             style={styles}
           />
         ) : (
-          <video
-            src={mediaUrl}
-            controls
+          <div
             onClick={() => openModal(mediaName, mediaKey, altText)}
-            style={styles}
-          />
+            style={{
+              ...styles,
+              backgroundImage: `url(${mediaUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              cursor: 'pointer',
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '80px',
+                height: '80px',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
         )}
       </div>
     );
@@ -322,9 +440,9 @@ const CollectionComponent: React.FC<{
         )}
       <CollectionImageWrapper>
         {[5, 6, 7, 8, 9].map(num => {
-          const media = collection[`image_name${num}` as keyof CollectionData] as
-            | string
-            | undefined;
+          const media = collection[
+            `image_name${num}` as keyof CollectionData
+          ] as string | undefined;
           return media
             ? renderMedia(
                 media,
@@ -342,6 +460,8 @@ const CollectionComponent: React.FC<{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              width: '100%',
+              height: '100%',
             }}
           >
             <button
@@ -360,7 +480,7 @@ const CollectionComponent: React.FC<{
             >
               ✖
             </button>
-            
+
             {currentMedia.type === 'image' ? (
               <img
                 src={currentMedia.url}
@@ -372,6 +492,8 @@ const CollectionComponent: React.FC<{
                   marginBottom: '20px',
                 }}
               />
+            ) : currentMedia.vimeoId ? (
+              <VimeoContainer ref={vimeoContainerRef} />
             ) : (
               <video
                 src={currentMedia.url}

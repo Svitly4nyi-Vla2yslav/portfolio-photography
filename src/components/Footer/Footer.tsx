@@ -38,14 +38,17 @@ const Footer: React.FC = () => {
           <CopyrightContainer>
             <TextCopyright>Copyright</TextCopyright>
             <TitelCopyright>© 2025 Pavlo Troph</TitelCopyright>
-          </CopyrightContainer>
+          </CopyrightContainer>{' '}
+          <EmailContainer>
+            <TextCopyright>.</TextCopyright>
+            <EmailLink href="mailto:info@pavlotroph.com">.</EmailLink>
+          </EmailContainer>
           <EmailContainer>
             <TextCopyright>Contact</TextCopyright>
             <EmailLink href="mailto:info@pavlotroph.com">
               info@pavlotroph.com
             </EmailLink>
           </EmailContainer>
-
           <SocialContainer>
             <TextCopyright>Social</TextCopyright>
             <SocialLinkWrapper>
