@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     <>
       <HomeContainer>
         <HomeTitel>
-          <HomeWrapperDetails data-aos="zoom-out-down">
+          <HomeWrapperDetails>
           
             <NavItem>
               <StyledNavLink to="/work">WORK</StyledNavLink>

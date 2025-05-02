@@ -14,10 +14,16 @@ import {
   CollectionTextWrapper,
   CollectionImageWrapper,
   ImageBlock,
-  Folder,
+  // Folder,
   VimeoContainer,
 } from './CollectionComponent.styled';
 import Player from '@vimeo/player';
+import {
+  WorkFilterWrapp,
+  WorkTextFilter,
+  WorkTitel,
+  WorkTitelContainer,
+} from '../../pages/Work/Work.styled';
 
 export interface CollectionData {
   id: number;
@@ -76,21 +82,31 @@ export interface CollectionData {
   vimeo_id41?: string;
 }
 
-const CollectionComponent: React.FC<{
+interface CollectionComponentProps {
   collection: CollectionData;
   collections: CollectionData[];
-}> = ({ collection }) => {
+  source?: 'work' | 'photo';
+}
+
+const CollectionComponent: React.FC<CollectionComponentProps> = ({
+  collection,
+  // collections,
+  source = 'work',
+}) => {
+  const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>(
+    'ALL'
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentMedia, setCurrentMedia] = useState({
     url: '',
-    type: 'image', // 'image' or 'video'
+    type: 'image',
     altText: '',
     description: '',
     vimeoId: '',
   });
   const [isLoading, setIsLoading] = useState(true);
   const [failedMedia, setFailedMedia] = useState<Set<string>>(new Set());
-  const topRef = React.useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
   const vimeoPlayerRef = useRef<Player | null>(null);
   const vimeoContainerRef = useRef<HTMLDivElement>(null);
 
@@ -151,7 +167,6 @@ const CollectionComponent: React.FC<{
                   resolve();
                 };
               } else {
-                // For videos, we can't preload the same way, so we just resolve
                 resolve();
               }
             });
@@ -223,51 +238,59 @@ const CollectionComponent: React.FC<{
     styles = {}
   ) => {
     if (!mediaName || isMediaFailed(mediaName)) return null;
-
+  
     const mediaType = getMediaType(mediaName);
     const mediaUrl = getMediaUrl(mediaName);
-    const vimeoId = getVimeoId(mediaKey);
 
     // If we have Vimeo ID, use Vimeo thumbnail
-    if (vimeoId) {
-      return (
-        <div className="video-container" key={`${vimeoId}-${index}`}>
-          <div
-            onClick={() => openModal(mediaName, mediaKey, altText)}
-            style={{
-              ...styles,
-              backgroundImage: `url(https://vumbnail.com/${vimeoId}.jpg)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              cursor: 'pointer',
-              width: '100%',
-              height: '100%',
-              position: 'relative',
-            }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '80px',
-                height: '80px',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-          </div>
+     // Для відео створюємо прев'ю з першого кадру
+  if (mediaType === 'video') {
+    return (
+      <div 
+        key={`${mediaName}-${index}`}
+        style={{
+          ...styles,
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          cursor: 'pointer'
+        }}
+        onClick={() => openModal(mediaName, mediaKey, altText)}
+      >
+        <video
+          src={mediaUrl}
+          muted
+          playsInline
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block'
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80px',
+            height: '80px',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+            <path d="M8 5v14l11-7z" />
+          </svg>
         </div>
-      );
-    }
+      </div>
+    );
+  }
+
 
     return (
       <div className="image-container" key={`${mediaName}-${index}`}>
@@ -342,7 +365,27 @@ const CollectionComponent: React.FC<{
 
   return (
     <CollectionContainer ref={topRef}>
-      <Folder>{collection.folder}</Folder>
+      <WorkTitelContainer>
+        <WorkTitel>{source === 'photo' ? 'PHOTOGRAPHY' : 'WORK'}</WorkTitel>
+        <WorkFilterWrapp style={{ gap: '2%', marginTop: '1%' }}>
+          {['ALL', 'COMMERCIAL', 'PERSONAL'].map(cat => (
+            <WorkTextFilter
+              key={cat}
+              onClick={() =>
+                setFilter(cat as 'ALL' | 'COMMERCIAL' | 'PERSONAL')
+              }
+              className={
+                filter === cat ||
+                (cat !== 'ALL' && collection.folder.toUpperCase() === cat)
+                  ? 'active'
+                  : ''
+              }
+            >
+              {cat}
+            </WorkTextFilter>
+          ))}
+        </WorkFilterWrapp>
+      </WorkTitelContainer>
       <CollectionHeader>
         <CollectionWrapper>
           <CollectionText>Collection</CollectionText>

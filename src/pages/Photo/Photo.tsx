@@ -14,6 +14,7 @@ import { supabase } from '../../supabaseClient';
 import { Border } from '../../components/Footer/Footer.styled';
 import WorkItemComponent from '../../components/WorkItemComponent/WorkItemComponent';
 import Loading from '../../assets/video/logo_animated_hq.webm';
+import { Link } from 'react-router-dom';
 
 export type WorkItemData = {
   id: string;
@@ -101,7 +102,13 @@ const Photo: React.FC = () => {
       <WorkPhotoWrapp>
         {filteredWorks.length > 0 ? (
           filteredWorks.map(work => (
-            <WorkItemComponent key={work.id} work={work} />
+            <Link
+              key={work.id}
+              to={`/collections/${work.id}?source=photo`}
+              style={{  }}
+            >
+              <WorkItemComponent key={work.id} work={work} />
+            </Link>
           ))
         ) : (
           <div

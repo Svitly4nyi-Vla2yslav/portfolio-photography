@@ -14,6 +14,7 @@ import {
 } from './Work.styled';
 import { Border } from '../../components/Footer/Footer.styled';
 import Loading from '../../assets/video/logo_animated_hq.webm';
+import { Link } from 'react-router-dom';
 
 export type WorkItemData = {
   id: string;
@@ -100,7 +101,13 @@ const Work: React.FC = () => {
       <WorkPhotoWrapp>
         {filteredWorks.length > 0 ? (
           filteredWorks.map(work => (
-            <WorkItemComponent key={work.id} work={work} />
+            <Link
+              key={work.id}
+              to={`/collections/${work.id}?source=work`}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <WorkItemComponent key={work.id} work={work} />
+            </Link>
           ))
         ) : (
           <div
@@ -124,7 +131,6 @@ const Work: React.FC = () => {
           </div>
         )}
       </WorkPhotoWrapp>
-
       <Border />
 
       {currentQuote && (

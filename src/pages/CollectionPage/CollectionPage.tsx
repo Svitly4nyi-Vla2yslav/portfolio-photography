@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import CollectionComponent from '../../components/CollectionComponent/CollectionComponent';
 import CollectionSlider from '../../components/CollectionsSwiper/CollectionsSwiper';
@@ -9,6 +9,10 @@ import { NotFoundWraperr, NotFoundText } from '../Work/Work.styled';
 
 const CollectionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation(); // Перенесено на початок компонента
+  const searchParams = new URLSearchParams(location.search);
+  const source = searchParams.get('source') as 'work' | 'photo' || 'work';
+
   const [collection, setCollection] = useState<any>(null);
   const [collections, setCollections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +23,6 @@ const CollectionPage: React.FC = () => {
       try {
         setLoading(true);
         
-        // Завантажуємо конкретну колекцію
         const { data: collectionData, error: collectionError } = await supabase
           .from('collections')
           .select(`*, work:work_id (folder)`)
@@ -29,7 +32,6 @@ const CollectionPage: React.FC = () => {
         if (collectionError) throw collectionError;
         if (!collectionData) throw new Error('Collection not found');
 
-        // Завантажуємо всі колекції для навігації
         const { data: allCollections } = await supabase
           .from('collections')
           .select('id')
@@ -53,7 +55,6 @@ const CollectionPage: React.FC = () => {
     fetchData();
   }, [id]);
 
-  // Скрол до верху після завантаження
   useEffect(() => {
     if (!loading) {
       window.scrollTo({
@@ -62,7 +63,8 @@ const CollectionPage: React.FC = () => {
       });
     }
   }, [loading]);
-  if (loading)
+
+  if (loading) {
     return (
       <div
         style={{
@@ -84,8 +86,9 @@ const CollectionPage: React.FC = () => {
         />
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div
         style={{
@@ -97,7 +100,6 @@ const CollectionPage: React.FC = () => {
           background: '#000',
         }}
       >
-        {' '}
         <video
           src={Loading}
           autoPlay
@@ -109,7 +111,9 @@ const CollectionPage: React.FC = () => {
         Error: {error}
       </div>
     );
-  if (!collection)
+  }
+
+  if (!collection) {
     return (
       <NotFoundWraperr>
         <Border />
@@ -120,11 +124,15 @@ const CollectionPage: React.FC = () => {
         </NotFoundText>
       </NotFoundWraperr>
     );
+  }
 
   return (
     <>
-      <div /> {/* Додайте цей елемент на початку вашого контенту */}
-      <CollectionComponent collection={collection} collections={collections} />
+      <CollectionComponent 
+        collection={collection} 
+        collections={collections} 
+        source={source}
+      />
       <CollectionSlider
         currentId={collection.id}
         collectionIds={collections.map(c => c.id)}
