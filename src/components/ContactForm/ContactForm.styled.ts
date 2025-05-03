@@ -23,13 +23,12 @@ export const Input = styled.input<InputProps>`
   margin: 5px 0;
   border-radius: 4px;
   background: #0c0c0c;
-  border: none;
-  border: 1px solid ${props => props.hasError ? '#ff4d4f' : 'transparent'};
+  border: 1px solid ${props => (props.hasError ? '#ff4d4f' : 'transparent')};
   transition: border-color 0.3s;
-  
+
   &:focus {
     outline: none;
-    border-color: ${props => props.hasError ? '#ff4d4f' : '#1890ff'};
+    border-color: ${props => (props.hasError ? '#ff4d4f' : '#1890ff')};
   }
 `;
 

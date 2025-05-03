@@ -33,6 +33,104 @@ export const VimeoContainer = styled.div`
   }
 `;
 
+export const WorkTitelContainer = styled.div`
+margin: 0 auto;
+margin-top: 30px;
+margin-bottom: 50px;
+@media screen and (min-width: 744px){
+
+
+}
+
+@media screen and (min-width: 1440px){
+
+
+}
+`;
+
+export const WorkTitel = styled.h1`
+font-family: var(--font-family);
+font-weight: 600;
+font-size: 28px;
+line-height: 162%;
+color: #fff;
+text-align: center;
+@media screen and (min-width: 744px){
+font-size: 48px;
+
+}
+
+@media screen and (min-width: 1440px){
+
+
+}
+`;
+
+export const WorkFilterWrapp = styled.div`
+    margin: 0 auto;
+    display: flex;
+    gap: 25px;
+    flex-direction: row;
+    justify-content: center;
+@media screen and (min-width: 744px){
+
+
+}
+
+@media screen and (min-width: 1440px){
+
+
+}
+`;
+
+import { css } from '@emotion/react';
+
+ export const activeStyles = css`
+  color: rgb(255, 247, 247);
+  pointer-events: none;
+  cursor: default;
+`;
+
+
+export const WorkTextFilter = styled.a`
+  font-family: var(--second-family);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 162%;
+   color: #808080;
+   pointer-events: none;
+  cursor: default;
+
+  transition: all 0.3s ease-in-out;
+  position: relative;
+
+
+
+  
+
+  &.active {
+     color: rgb(255, 247, 247);
+  pointer-events: none;
+    &::after {
+      width: 100%;
+    }
+  }
+
+ 
+
+
+
+  @media screen and (min-width: 744px) {
+    font-size: 16px;
+  }
+
+  @media screen and (min-width: 1440px) {
+    // Можна додавати додаткові стилі для великих екранів
+  }
+`;
+
+
+
 export const Folder = styled.h2`
 text-transform: uppercase;
 font-family: var(--font-family);

@@ -97,6 +97,8 @@ export const WorkTextFilter = styled.a`
     width: 100%;
   }
 
+
+
   @media screen and (min-width: 744px) {
     font-size: 16px;
   }

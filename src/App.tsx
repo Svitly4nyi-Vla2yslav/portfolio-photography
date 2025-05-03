@@ -22,7 +22,7 @@ const AnimatedPage = ({ children }: { children: React.ReactNode }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -100 }}
       transition={{ 
-        duration: 0.7,
+        duration: 0.4,
         ease: [0.22, 1, 0.36, 1],
       }}
       style={{

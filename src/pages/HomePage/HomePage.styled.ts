@@ -37,35 +37,40 @@ margin: 0 auto;
 export const SpanTitel = styled.span`
 
 `;
-
 export const NavItem = styled.li`
-    display: flex;
-    width: 100%;
-    margin: 0 auto;
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  transition: all 0.2s ease;
 
-
-    &:hover,
-    &.active {
-    background-color:rgb(255, 255, 255);
-      color:rgb(0, 0, 0);
-    }
-
-    
   a {
     text-decoration: none;
     color: rgb(255, 255, 255);
-  font-family: var(--second-family);
-font-weight: 500;
-font-size: 24px;
-text-align: center;
-width: 100%;
+    font-family: var(--second-family);
+    font-weight: 500;
+    font-size: 24px;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    transition: all 0.2s ease;
 
-    &:hover,
-    &.active {
-    background-color:rgb(255, 255, 255);
-      color:rgb(0, 0, 0);
+    /* Стилі при ховері */
+    &:hover {
+      color: rgb(255, 255, 255);
     }
-  
+
+    /* Стилі при кліку (поки кнопка зажата) */
+    &:active {
+      background-color: rgb(255, 255, 255) !important;
+      color: rgb(0, 0, 0) !important;
+    }
+
+    /* Стилі для активного стану (якщо сторінка активна) */
+    &.active {
+      background-color: rgb(255, 255, 255);
+      color: rgb(0, 0, 0);
+    }
+  }
 `;
 
 export const StyledNavLink = styled(NavLink)`
@@ -93,18 +98,20 @@ width: 100%;
     font-size: 20px;
   }
 
-  &:hover {
-background-color:rgb(255, 255, 255);
-    
-  }
+
 
   &:hover::before {
     opacity: 1;
-      color:rgb(0, 0, 0);
+      color:rgb(255, 255, 255);
     transform: translateY(-50%) translateX(0);
   }
 
-  &.active {
+      &:active::before {
+      background-color: rgb(255, 255, 255) !important;
+      color: rgb(0, 0, 0) !important;
+    }
+
+  &.active::before {
 background-color:rgb(255, 255, 255);
       color:rgb(0, 0, 0);
   }

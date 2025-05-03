@@ -74,7 +74,7 @@ const Work: React.FC = () => {
       setCurrentQuote(quotes[randomIndex]);
     }
   }, [quotes]);
-
+  const source = 'work';
   return (
     <WorkContainer>
       <WorkTitelContainer>
@@ -103,7 +103,7 @@ const Work: React.FC = () => {
           filteredWorks.map(work => (
             <Link
               key={work.id}
-              to={`/collections/${work.id}?source=work`}
+              to={`/collections/${work.id}?source=${source}&filter=${filter}`}
               style={{ width: '100%', height: '100%' }}
             >
               <WorkItemComponent key={work.id} work={work} />

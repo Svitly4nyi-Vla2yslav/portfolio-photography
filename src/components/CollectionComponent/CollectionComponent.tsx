@@ -16,14 +16,14 @@ import {
   ImageBlock,
   // Folder,
   VimeoContainer,
+  WorkTextFilter,
+  WorkFilterWrapp,
+  WorkTitelContainer,
+  WorkTitel,
 } from './CollectionComponent.styled';
 import Player from '@vimeo/player';
-import {
-  WorkFilterWrapp,
-  WorkTextFilter,
-  WorkTitel,
-  WorkTitelContainer,
-} from '../../pages/Work/Work.styled';
+
+import { useLocation } from 'react-router-dom';
 
 export interface CollectionData {
   id: number;
@@ -82,20 +82,32 @@ export interface CollectionData {
   vimeo_id41?: string;
 }
 
-interface CollectionComponentProps {
+export interface CollectionComponentProps {
   collection: CollectionData;
-  collections: CollectionData[];
+  collections?: CollectionData[];
   source?: 'work' | 'photo';
+  initialFilter?: 'ALL' | 'COMMERCIAL' | 'PERSONAL';
 }
 
 const CollectionComponent: React.FC<CollectionComponentProps> = ({
   collection,
-  // collections,
-  source = 'work',
 }) => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const source = searchParams.get('source') || 'work';
   const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>(
-    'ALL'
+    (searchParams.get('filter') as 'ALL' | 'COMMERCIAL' | 'PERSONAL') || 'ALL'
   );
+  const updateUrlFilter = (newFilter: string) => {
+    const newSearchParams = new URLSearchParams(location.search);
+    newSearchParams.set('filter', newFilter);
+    window.history.replaceState(
+      {},
+      '',
+      `${location.pathname}?${newSearchParams}`
+    );
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentMedia, setCurrentMedia] = useState({
     url: '',
@@ -238,59 +250,58 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
     styles = {}
   ) => {
     if (!mediaName || isMediaFailed(mediaName)) return null;
-  
+
     const mediaType = getMediaType(mediaName);
     const mediaUrl = getMediaUrl(mediaName);
 
     // If we have Vimeo ID, use Vimeo thumbnail
-     // Для відео створюємо прев'ю з першого кадру
-  if (mediaType === 'video') {
-    return (
-      <div 
-        key={`${mediaName}-${index}`}
-        style={{
-          ...styles,
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          cursor: 'pointer'
-        }}
-        onClick={() => openModal(mediaName, mediaKey, altText)}
-      >
-        <video
-          src={mediaUrl}
-          muted
-          playsInline
+    // Для відео створюємо прев'ю з першого кадру
+    if (mediaType === 'video') {
+      return (
+        <div
+          key={`${mediaName}-${index}`}
           style={{
+            ...styles,
+            position: 'relative',
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
-            display: 'block'
+            cursor: 'pointer',
           }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '80px',
-            height: '80px',
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          onClick={() => openModal(mediaName, mediaKey, altText)}
         >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-            <path d="M8 5v14l11-7z" />
-          </svg>
+          <video
+            src={mediaUrl}
+            muted
+            playsInline
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '80px',
+              height: '80px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
         </div>
-      </div>
-    );
-  }
-
+      );
+    }
 
     return (
       <div className="image-container" key={`${mediaName}-${index}`}>
@@ -367,22 +378,23 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
     <CollectionContainer ref={topRef}>
       <WorkTitelContainer>
         <WorkTitel>{source === 'photo' ? 'PHOTOGRAPHY' : 'WORK'}</WorkTitel>
-        <WorkFilterWrapp style={{ gap: '2%', marginTop: '1%' }}>
+        <WorkFilterWrapp>
           {['ALL', 'COMMERCIAL', 'PERSONAL'].map(cat => (
             <WorkTextFilter
-              key={cat}
-              onClick={() =>
-                setFilter(cat as 'ALL' | 'COMMERCIAL' | 'PERSONAL')
+            key={cat}
+            onClick={() => {
+              if (filter !== cat) {
+                setFilter(cat as 'ALL' | 'COMMERCIAL' | 'PERSONAL');
+                updateUrlFilter(cat);
               }
-              className={
-                filter === cat ||
-                (cat !== 'ALL' && collection.folder.toUpperCase() === cat)
-                  ? 'active'
-                  : ''
-              }
-            >
-              {cat}
-            </WorkTextFilter>
+            }}
+            className={filter === cat ? 'active' : ''}
+            aria-disabled={filter === cat}
+            data-active={filter === cat}
+            tabIndex={filter === cat ? -1 : 0} // Вимкнути фокус для активного
+          >
+            {cat}
+          </WorkTextFilter>
           ))}
         </WorkFilterWrapp>
       </WorkTitelContainer>

@@ -39,7 +39,7 @@ const Photo: React.FC = () => {
   const [filter, setFilter] = useState<'ALL' | 'COMMERCIAL' | 'PERSONAL'>(
     'ALL'
   );
-
+  const source = 'photo';
   const filteredWorks =
     filter === 'ALL'
       ? works
@@ -104,8 +104,8 @@ const Photo: React.FC = () => {
           filteredWorks.map(work => (
             <Link
               key={work.id}
-              to={`/collections/${work.id}?source=photo`}
-              style={{  }}
+              to={`/collections/${work.id}?source=${source}&filter=${filter}`} // Додаємо filter
+              style={{}}
             >
               <WorkItemComponent key={work.id} work={work} />
             </Link>

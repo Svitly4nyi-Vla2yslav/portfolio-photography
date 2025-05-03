@@ -1,15 +1,11 @@
-// src/components/ContactForm.tsx
 import { useState } from 'react';
-
 import { supabase } from '../../supabaseClient';
-
 import {
   FormContainer,
   Success,
   FormGroup,
   Input,
   Textarea,
-  Error,
   Button,
 } from './ContactForm.styled';
 
@@ -18,30 +14,24 @@ const ContactForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const [touched, setTouched] = useState({
-    fullName: false,
-    email: false,
-  });
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
-  const handleBlur = (field: 'fullName' | 'email') => {
-    setTouched(prev => ({ ...prev, [field]: true }));
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setTouched({ fullName: true, email: true });
-  
-    if (!fullName || !email) {
-      setError('Full Name and Email are required');
+    setSubmitted(true);
+
+    if (!fullName || !email || !validateEmail(email)) {
+      setError('Please fill out the required fields correctly.');
       return;
     }
-  
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
-      return;
-    }
+
     try {
       const { error } = await supabase.from('contact_messages').insert([
         {
@@ -61,57 +51,35 @@ const ContactForm: React.FC = () => {
       setSubject('');
       setMessage('');
       setError(null);
-      setTouched({ fullName: false, email: false });
+      setSubmitted(false);
     } catch (error) {
       setError('Something went wrong. Please try again later.');
       setSuccess(false);
     }
   };
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
 
   return (
     <FormContainer>
       {success && <Success>Your message has been sent successfully!</Success>}
-      {error && <Error>{error}</Error>}
       <form onSubmit={handleSubmit}>
         <FormGroup>
           <Input
-            type="text"
             placeholder="Full Name (required)"
             value={fullName}
             onChange={e => setFullName(e.target.value)}
-            onBlur={() => handleBlur('fullName')}
-            hasError={touched.fullName && !fullName}
+            hasError={submitted && !fullName}
           />
-          {touched.fullName && !fullName && (
-            <Error>Full Name is required</Error>
-          )}
         </FormGroup>
         <FormGroup>
           <Input
-           
             placeholder="Email (required)"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            onBlur={() => handleBlur('email')}
-            hasError={
-              !!(
-                (touched.email && !email) ||
-                (touched.email && email && !validateEmail(email))
-              )
-            }
+            hasError={submitted && (!email || !validateEmail(email))}
           />
-          {touched.email && !email && <Error>Email is required</Error>}
-          {touched.email && email && !validateEmail(email) && (
-            <Error>Please enter a valid email address</Error>
-          )}
         </FormGroup>
         <FormGroup>
           <Input
-            type="text"
             placeholder="Subject"
             value={subject}
             onChange={e => setSubject(e.target.value)}
