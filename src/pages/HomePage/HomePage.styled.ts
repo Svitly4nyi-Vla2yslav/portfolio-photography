@@ -51,7 +51,6 @@ export const NavItem = styled.li`
     font-size: 24px;
     text-align: center;
     width: 100%;
-    padding: 10px;
     transition: all 0.2s ease;
 
     /* Стилі при ховері */

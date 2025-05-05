@@ -241,7 +241,86 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const renderVimeoVideos = () => {
+    const videos: { id: string; key: string; title: string; index: number }[] =
+      [];
 
+    // Головне відео
+    if (collection.vimeo_id) {
+      videos.push({
+        id: collection.vimeo_id,
+        key: 'image_name',
+        title: collection.collection_name,
+        index: 0,
+      });
+    }
+
+    // Додаткові відео
+    for (let i = 1; i <= 10; i++) {
+      const vimeoKey = `vimeo_id${i}` as keyof CollectionData;
+      if (collection[vimeoKey]) {
+        videos.push({
+          id: collection[vimeoKey] as string,
+          key: `image_name${i}`,
+          title: `${collection.collection_name} Vimeo ${i}`,
+          index: i,
+        });
+      }
+    }
+
+    return videos.map(video => (
+      <div
+        key={`vimeo-${video.id}-${video.index}`}
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '50vh',
+          cursor: 'pointer',
+          marginBottom: '20px',
+        }}
+        onClick={() => {
+          setCurrentMedia({
+            url: '',
+            type: 'video',
+            altText: video.title,
+            description:
+              collection[`${video.key}_title` as keyof CollectionData] || '',
+            vimeoId: video.id,
+          });
+          setIsModalOpen(true);
+        }}
+      >
+        <img
+          src={`https://vumbnail.com/${video.id}.jpg`}
+          alt={video.title}
+          style={{
+            width: '100%',
+            height: '50vh',
+            objectFit: 'cover',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80px',
+            height: '80px',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </div>
+      </div>
+    ));
+  };
   const renderMedia = (
     mediaName: string | undefined,
     mediaKey: string,
@@ -249,17 +328,20 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
     index: number,
     styles = {}
   ) => {
-    if (!mediaName || isMediaFailed(mediaName)) return null;
+    const vimeoId = getVimeoId(mediaKey);
 
-    const mediaType = getMediaType(mediaName);
-    const mediaUrl = getMediaUrl(mediaName);
+    // Якщо немає ні зображення, ні Vimeo ID - не рендеримо
+    if (!mediaName && !vimeoId) return null;
+    if (mediaName && isMediaFailed(mediaName)) return null;
 
-    // If we have Vimeo ID, use Vimeo thumbnail
-    // Для відео створюємо прев'ю з першого кадру
-    if (mediaType === 'video') {
+    const mediaType = mediaName ? getMediaType(mediaName) : 'video';
+    const mediaUrl = mediaName ? getMediaUrl(mediaName) : '';
+
+    // Якщо є Vimeo ID - рендеримо Vimeo прев'ю
+    if (vimeoId) {
       return (
         <div
-          key={`${mediaName}-${index}`}
+          key={`vimeo-${vimeoId}-${index}`}
           style={{
             ...styles,
             position: 'relative',
@@ -267,17 +349,15 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             height: '100%',
             cursor: 'pointer',
           }}
-          onClick={() => openModal(mediaName, mediaKey, altText)}
+          onClick={() => openModal(mediaName || '', mediaKey, altText)}
         >
-          <video
-            src={mediaUrl}
-            muted
-            playsInline
+          <img
+            src={`https://vumbnail.com/${vimeoId}.jpg`}
+            alt={altText}
             style={{
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              display: 'block',
             }}
           />
           <div
@@ -309,13 +389,13 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
           <img
             src={mediaUrl}
             alt={altText}
-            onClick={() => openModal(mediaName, mediaKey, altText)}
-            onError={() => handleMediaError(mediaName)}
+            onClick={() => openModal(mediaName || '', mediaKey, altText)}
+            onError={() => handleMediaError(mediaName ?? '')}
             style={styles}
           />
         ) : (
           <div
-            onClick={() => openModal(mediaName, mediaKey, altText)}
+            onClick={() => openModal(mediaName || '', mediaKey, altText)}
             style={{
               ...styles,
               backgroundImage: `url(${mediaUrl})`,
@@ -381,20 +461,20 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
         <WorkFilterWrapp>
           {['ALL', 'COMMERCIAL', 'PERSONAL'].map(cat => (
             <WorkTextFilter
-            key={cat}
-            onClick={() => {
-              if (filter !== cat) {
-                setFilter(cat as 'ALL' | 'COMMERCIAL' | 'PERSONAL');
-                updateUrlFilter(cat);
-              }
-            }}
-            className={filter === cat ? 'active' : ''}
-            aria-disabled={filter === cat}
-            data-active={filter === cat}
-            tabIndex={filter === cat ? -1 : 0} // Вимкнути фокус для активного
-          >
-            {cat}
-          </WorkTextFilter>
+              key={cat}
+              onClick={() => {
+                if (filter !== cat) {
+                  setFilter(cat as 'ALL' | 'COMMERCIAL' | 'PERSONAL');
+                  updateUrlFilter(cat);
+                }
+              }}
+              className={filter === cat ? 'active' : ''}
+              aria-disabled={filter === cat}
+              data-active={filter === cat}
+              tabIndex={filter === cat ? -1 : 0} // Вимкнути фокус для активного
+            >
+              {cat}
+            </WorkTextFilter>
           ))}
         </WorkFilterWrapp>
       </WorkTitelContainer>
@@ -420,13 +500,11 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
           <CollectionDescription>{collection.synopsis}</CollectionDescription>
         </CollectionWrapper>
       </CollectionHeader>
-
-      {renderMedia(
-        collection.image_name,
-        'image_name',
-        collection.collection_name,
-        0
-      )}
+      <div style={{ marginBottom: '20px' }}>
+        {renderVimeoVideos().map((video, index) => (
+          <React.Fragment key={`vimeo-video-${index}`}>{video}</React.Fragment>
+        ))}
+      </div>
       <CollectionTextWrapper>
         <CollectionText>Description</CollectionText>
         <CollectionDescription>{collection.description}</CollectionDescription>
