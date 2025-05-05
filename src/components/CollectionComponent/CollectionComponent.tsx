@@ -428,37 +428,35 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
     title?: string;
   }) => {
     return (
-      <div style={{
-        width: '100vw',
-        // marginLeft: 'calc(-50vw + 50%)',
-        marginBottom: '40px',
-        position: 'relative',
-        overflow: 'hidden',
-        height: "65vh",
-                objectFit: "cover"
-      }}>
-        {/* Відео контейнер */}
-        <div style={{
-          width: '100vh',
-          height: '100vh',
+      <div className="player player-2d0a252e-6039-484d-93f7-da12d668d541 js-player-fullscreen with-fullscreen with-sticky-custom-logo player-normal app-xxl player-xxl"
+        style={{
+          width: '100%',
+          margin: '0 auto',
           position: 'relative',
+          overflow: 'hidden',
           backgroundColor: '#000',
-                objectFit: "cover"
+          height: 'calc(77.4817vw)',
+        }}>
+        
+        {/* Video container */}
+        <div style={{
+          position: 'relative',
+          paddingBottom: '56.25%', // 16:9 aspect ratio
+          overflow: 'hidden',
+          maxWidth: '100%',
+          height: "35vw"
         }}>
           {vimeoId ? (
             <iframe
               src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&loop=0&title=0&byline=0&portrait=0`}
+              className="vimeo-player"
               style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: '100vw',
-                height: '100%',
-                border: 'none',
-                objectFit: "contain",
-                overflow: 'visible',
-                margin: "0 auto"
-
+                width: '100%',
+                height: '100vw',
+                border: 'none'
               }}
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
@@ -468,6 +466,9 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
               src={url}
               controls
               style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover'
@@ -476,13 +477,14 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
           )}
         </div>
   
-        {/* Опис та заголовок */}
+        {/* Caption area */}
         <div style={{
           color: '#fff',
           textAlign: 'center',
-          padding: '20px 10%',
-          width: '100%',
-          boxSizing: 'border-box'
+          padding: '20px 5%',
+          width: '90%',
+          margin: '0 auto',
+          maxWidth: '1200px'
         }}>
           {description && (
             <p style={{ margin: '10px 0', lineHeight: '1.5' }}>
