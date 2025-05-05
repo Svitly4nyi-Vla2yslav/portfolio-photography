@@ -17,7 +17,7 @@ const ModalContent = styled.div`
   position: relative;
   max-width: 100vw;
   max-height: 90vh;
-  margin: 2vh auto;
+  margin: 0vh auto;
   // padding: 20px;
   background: transparent;
 `;

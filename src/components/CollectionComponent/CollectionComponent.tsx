@@ -224,6 +224,9 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
   const openModal = (mediaName: string, mediaKey: string, altText: string) => {
     if (isMediaFailed(mediaName)) return;
 
+    // Заборонити скрол сторінки
+    document.body.style.overflow = 'hidden';
+
     const descriptionKey = `${mediaKey}_title` as keyof CollectionData;
     const mediaType = getMediaType(mediaName);
     const vimeoId = getVimeoId(mediaKey);
@@ -239,6 +242,8 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
   };
 
   const closeModal = () => {
+    // Повернути скрол сторінки
+    document.body.style.overflow = 'auto';
     setIsModalOpen(false);
   };
   const renderVimeoVideos = () => {
@@ -268,58 +273,20 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
       }
     }
 
-    return videos.map(video => (
-      <div
-        key={`vimeo-${video.id}-${video.index}`}
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '50vh',
-          cursor: 'pointer',
-          marginBottom: '20px',
-        }}
-        onClick={() => {
-          setCurrentMedia({
-            url: '',
-            type: 'video',
-            altText: video.title,
-            description:
-              collection[`${video.key}_title` as keyof CollectionData] || '',
-            vimeoId: video.id,
-          });
-          setIsModalOpen(true);
-        }}
-      >
-        <img
-          src={`https://vumbnail.com/${video.id}.jpg`}
-          alt={video.title}
-          style={{
-            width: '100%',
-            height: '50vh',
-            objectFit: 'cover',
-          }}
+    return videos.map(video => {
+      const descriptionKey = `${video.key}_title` as keyof CollectionData;
+      const description = collection[descriptionKey] || '';
+
+      return (
+        <VideoPlayer
+          key={`vimeo-player-${video.id}-${video.index}`}
+          vimeoId={video.id}
+          url=""
+          description={description}
+          title={collection.work_title}
         />
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '80px',
-            height: '80px',
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
-      </div>
-    ));
+      );
+    });
   };
   const renderMedia = (
     mediaName: string | undefined,
@@ -454,6 +421,124 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
     );
   }
 
+  const VideoPlayer = ({ url, vimeoId, description, title }: {
+    url: string;
+    vimeoId: string;
+    description: string;
+    title?: string;
+  }) => {
+    return (
+      <div style={{
+        width: '100vw',
+        // marginLeft: 'calc(-50vw + 50%)',
+        marginBottom: '40px',
+        position: 'relative',
+        overflow: 'hidden',
+        height: "65vh",
+                objectFit: "cover"
+      }}>
+        {/* Відео контейнер */}
+        <div style={{
+          width: '100vh',
+          height: '100vh',
+          position: 'relative',
+          backgroundColor: '#000',
+                objectFit: "cover"
+        }}>
+          {vimeoId ? (
+            <iframe
+              src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&loop=0&title=0&byline=0&portrait=0`}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100%',
+                border: 'none',
+                objectFit: "contain",
+                overflow: 'visible',
+                margin: "0 auto"
+
+              }}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              src={url}
+              controls
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          )}
+        </div>
+  
+        {/* Опис та заголовок */}
+        <div style={{
+          color: '#fff',
+          textAlign: 'center',
+          padding: '20px 10%',
+          width: '100%',
+          boxSizing: 'border-box'
+        }}>
+          {description && (
+            <p style={{ margin: '10px 0', lineHeight: '1.5' }}>
+              {description}
+            </p>
+          )}
+          {title && (
+            <h3 style={{ margin: '20px 0', fontSize: '1.5rem' }}>
+              {title}
+            </h3>
+          )}
+        </div>
+      </div>
+    );
+  };
+  const renderLocalVideos = () => {
+    const videos: { url: string; key: string; title: string; index: number }[] =
+      [];
+
+    // Перевіряємо всі можливі image_name поля
+    for (let i = 0; i <= 10; i++) {
+      const mediaKey = i === 0 ? 'image_name' : `image_name${i}`;
+      const mediaName = collection[mediaKey as keyof CollectionData] as
+        | string
+        | undefined;
+
+      if (
+        mediaName &&
+        getMediaType(mediaName) === 'video' &&
+        !getVimeoId(mediaKey)
+      ) {
+        videos.push({
+          url: getMediaUrl(mediaName),
+          key: mediaKey,
+          title: `${collection.collection_name} Video ${i}`,
+          index: i,
+        });
+      }
+    }
+
+    return videos.map(video => {
+      const descriptionKey = `${video.key}_title` as keyof CollectionData;
+      const description = collection[descriptionKey] || '';
+
+      return (
+        <VideoPlayer
+          key={`local-video-${video.index}`}
+          url={video.url}
+          vimeoId=""
+          description={description}
+          title={collection.work_title}
+        />
+      );
+    });
+  };
+
   return (
     <CollectionContainer ref={topRef}>
       <WorkTitelContainer>
@@ -500,9 +585,12 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
           <CollectionDescription>{collection.synopsis}</CollectionDescription>
         </CollectionWrapper>
       </CollectionHeader>
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{}}>
         {renderVimeoVideos().map((video, index) => (
           <React.Fragment key={`vimeo-video-${index}`}>{video}</React.Fragment>
+        ))}
+        {renderLocalVideos().map((video, index) => (
+          <React.Fragment key={`local-video-${index}`}>{video}</React.Fragment>
         ))}
       </div>
       <CollectionTextWrapper>
@@ -587,7 +675,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
         })}
       </CollectionImageWrapper>
       {isModalOpen && (
-        <Modal onClose={closeModal} preventScroll={true}>
+        <Modal onClose={closeModal}>
           <div
             style={{
               display: 'flex',
@@ -645,17 +733,15 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
               style={{
                 color: '#fff',
                 textAlign: 'center',
-                padding: '0 20px',
-                maxWidth: '800px',
+                padding: '0 0px',
+                width: '100%',
               }}
             >
               {currentMedia.description && (
-                <p style={{ marginBottom: '20px' }}>
-                  {currentMedia.description}
-                </p>
+                <p style={{}}>{currentMedia.description}</p>
               )}
               {collection.work_title && (
-                <h3 style={{ marginTop: 0 }}>{collection.work_title}</h3>
+                <h3 style={{ marginBottom: 110 }}>{collection.work_title}</h3>
               )}
             </div>
           </div>
