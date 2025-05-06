@@ -23,7 +23,7 @@ export type WorkItemData = {
   title: string;
   description: string;
   preview_url: string | null;
-  vimeo_id: string;
+  vimeo_id?: string;
 };
 
 export type Quote = {
