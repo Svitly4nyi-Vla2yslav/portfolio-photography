@@ -20,6 +20,9 @@ import {
   WorkFilterWrapp,
   WorkTitelContainer,
   WorkTitel,
+  PlayerVimeo,
+  VimeoVideoContainer,
+  VideoCaption,
 } from './CollectionComponent.styled';
 import Player from '@vimeo/player';
 
@@ -313,7 +316,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             ...styles,
             position: 'relative',
             width: '100%',
-            height: '100%',
+            height: '50vw',
             cursor: 'pointer',
           }}
           onClick={() => openModal(mediaName || '', mediaKey, altText)}
@@ -323,7 +326,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             alt={altText}
             style={{
               width: '100%',
-              height: '100%',
+              height: '50%',
               objectFit: 'cover',
             }}
           />
@@ -428,118 +431,27 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
     title?: string;
   }) => {
     return (
-      <div className="player player-2d0a252e-6039-484d-93f7-da12d668d541 js-player-fullscreen with-fullscreen with-sticky-custom-logo player-normal app-xxl player-xxl"
-        style={{
-          width: '100%',
-          margin: '0 auto',
-          position: 'relative',
-          overflow: 'hidden',
-          backgroundColor: '#000',
-          height: 'calc(77.4817vw)',
-        }}>
-        
-        {/* Video container */}
-        <div style={{
-          position: 'relative',
-          paddingBottom: '56.25%', // 16:9 aspect ratio
-          overflow: 'hidden',
-          maxWidth: '100%',
-          height: "35vw"
-        }}>
+      <PlayerVimeo>
+        <VimeoVideoContainer>
           {vimeoId ? (
             <iframe
               src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&loop=0&title=0&byline=0&portrait=0`}
-              className="vimeo-player"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100vw',
-                border: 'none'
-              }}
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
             />
           ) : (
-            <video
-              src={url}
-              controls
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-            />
+            <video src={url} controls />
           )}
-        </div>
-  
-        {/* Caption area */}
-        <div style={{
-          color: '#fff',
-          textAlign: 'center',
-          padding: '20px 5%',
-          width: '90%',
-          margin: '0 auto',
-          maxWidth: '1200px'
-        }}>
-          {description && (
-            <p style={{ margin: '10px 0', lineHeight: '1.5' }}>
-              {description}
-            </p>
-          )}
-          {title && (
-            <h3 style={{ margin: '20px 0', fontSize: '1.5rem' }}>
-              {title}
-            </h3>
-          )}
-        </div>
-      </div>
+        </VimeoVideoContainer>
+        
+        <VideoCaption>
+          {description && <p>{description}</p>}
+          {title && <h3>{title}</h3>}
+        </VideoCaption>
+      </PlayerVimeo>
     );
   };
-  const renderLocalVideos = () => {
-    const videos: { url: string; key: string; title: string; index: number }[] =
-      [];
-
-    // Перевіряємо всі можливі image_name поля
-    for (let i = 0; i <= 10; i++) {
-      const mediaKey = i === 0 ? 'image_name' : `image_name${i}`;
-      const mediaName = collection[mediaKey as keyof CollectionData] as
-        | string
-        | undefined;
-
-      if (
-        mediaName &&
-        getMediaType(mediaName) === 'video' &&
-        !getVimeoId(mediaKey)
-      ) {
-        videos.push({
-          url: getMediaUrl(mediaName),
-          key: mediaKey,
-          title: `${collection.collection_name} Video ${i}`,
-          index: i,
-        });
-      }
-    }
-
-    return videos.map(video => {
-      const descriptionKey = `${video.key}_title` as keyof CollectionData;
-      const description = collection[descriptionKey] || '';
-
-      return (
-        <VideoPlayer
-          key={`local-video-${video.index}`}
-          url={video.url}
-          vimeoId=""
-          description={description}
-          title={collection.work_title}
-        />
-      );
-    });
-  };
+ 
 
   return (
     <CollectionContainer ref={topRef}>
@@ -591,9 +503,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
         {renderVimeoVideos().map((video, index) => (
           <React.Fragment key={`vimeo-video-${index}`}>{video}</React.Fragment>
         ))}
-        {renderLocalVideos().map((video, index) => (
-          <React.Fragment key={`local-video-${index}`}>{video}</React.Fragment>
-        ))}
+       
       </div>
       <CollectionTextWrapper>
         <CollectionText>Description</CollectionText>

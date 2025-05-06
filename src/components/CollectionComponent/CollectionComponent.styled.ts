@@ -16,20 +16,67 @@ max-width: 100%;
 }
 `;
 
+export const PlayerVimeo = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  background: #000;
+`;
+
+export const VimeoVideoContainer = styled.div`
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+background-size: cover;
+  iframe, video {
+      position: absolute;
+    top: -30%; /* Компенсуємо зменшення висоти */
+    left: 0;
+    width: 100%;
+    height: 100%; /* Збільшуємо висоту iframe */
+    border: none;
+  }
+
+  video {
+  background-size: cover;
+    object-fit: cover;
+  }
+`;
+
+export const VideoCaption = styled.div`
+  color: #fff;
+  text-align: center;
+  // padding: 20px 5%;
+  width: 90%;
+  margin: 0 auto;
+  max-width: 1200px;
+
+  p {
+    margin: 10px 0;
+    line-height: 1.5;
+  }
+
+  h3 {
+    margin: 20px 0;
+    font-size: 1.5rem;
+  }
+`;
+
 export const VimeoContainer = styled.div`
   width: 100%;
   max-width: 1280px;
   height: 0;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
   position: relative;
-  margin-bottom: 20px;
 
   iframe {
     position: absolute;
-    top: 0;
+    top: -10%;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 50vh;
+    background-size: cover;
   }
 `;
 

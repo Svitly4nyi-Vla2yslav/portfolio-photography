@@ -108,6 +108,11 @@ export const GlobalStyle = css`
     background-position: right bottom;
     transition: all 0.5s ease-in-out;
   }
+    video {
+    object-fit: contain;
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
 
   ul, li {
     list-style: none;
