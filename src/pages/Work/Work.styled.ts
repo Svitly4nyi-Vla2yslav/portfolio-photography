@@ -176,11 +176,13 @@ export const OriginalLayer = styled.div<{ $isVisible: boolean }>`
 `;
 
 export const VideoPreview = styled.div<{ $isVisible: boolean; $imageUrl: string }>`
-  position: absolute;
+  position: absolute;        // 👈 fixed — прив’язка до viewport
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;           // 👈 повна ширина екрана
+  height: 100vh;          // 👈 повна висота екрана
+  overflow: hidden;     /* 👈 або фіксована висота */
+  z-index: 1000;     /* 👈 поверх усього */
   transition: opacity 0.3s ease-out;
   opacity: ${props => props.$isVisible ? 1 : 0};
   z-index: 0;
@@ -188,9 +190,12 @@ export const VideoPreview = styled.div<{ $isVisible: boolean; $imageUrl: string 
   background-color: #000;
 
   video {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
     object-fit: cover;
+    top: 0;
+    left: 0;
   }
 
   &::after {

@@ -18,7 +18,9 @@ const WorkItemComponent: React.FC<{ work: WorkItemData }> = ({ work }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
 
-  const { folder, image_name, title, preview_url } = work;
+  const { folder, image_name, title, preview_url, vimeo_id } = work;
+  const isVimeo = Boolean(vimeo_id);
+
   const src = `https://qcrjljxbutsvgveiozjd.supabase.co/storage/v1/object/public/work-images/${folder}/${image_name}`;
   const isVideo = image_name.toLowerCase().endsWith('.mp4');
 
@@ -53,13 +55,13 @@ const WorkItemComponent: React.FC<{ work: WorkItemData }> = ({ work }) => {
   }, [previewSrc, src, isVideo]);
 
   useEffect(() => {
-    if (isHovered && isVideo && videoRef.current) {
+    if (isHovered && isVideo && !isVimeo && videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(console.error);
-    } else if (!isHovered && isVideo && videoRef.current) {
+    } else if ((!isHovered || isVimeo) && isVideo && videoRef.current) {
       videoRef.current.pause();
     }
-  }, [isHovered, isVideo]);
+  }, [isHovered, isVideo, isVimeo]);
 
   const handleClick = () => {
     navigate(`/collections/${work.id}`);
@@ -115,19 +117,41 @@ const WorkItemComponent: React.FC<{ work: WorkItemData }> = ({ work }) => {
       )}
 
       {/* Шар для відео (показується при наведенні) */}
-      {isVideo && isHovered && (
-        <VideoPreview $isVisible={isHovered} $imageUrl={previewSrc}>
-          <video
-            ref={videoRef}
-            src={src}
-            muted
-            loop
-            preload="auto"
-            playsInline
-            disablePictureInPicture
-          />
-        </VideoPreview>
-      )}
+      {isHovered && (isVideo || isVimeo) && (
+  <VideoPreview $isVisible={isHovered} $imageUrl={previewSrc}>
+    {isVimeo ? (
+      <iframe
+        src={`https://player.vimeo.com/video/${vimeo_id}?autoplay=1&muted=1&loop=1&background=1`}
+        width="100%"
+        height="100%"
+        frameBorder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowFullScreen
+        style={{
+          position: 'absolute',
+          top: "-15%",
+          left: 0,
+          width: '100vw',       // 👈 ключовий момент — viewport ширина
+         height: '100vh', 
+          maxWidth: 'none',
+          maxHeight: 'none',
+          border: 'none',
+          zIndex: 1,
+        }}
+      />
+    ) : (
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        loop
+        preload="auto"
+        playsInline
+        disablePictureInPicture
+      />
+    )}
+  </VideoPreview>
+)}
 
       {/* Заголовок (завжди присутній, але з анімацією) */}
       <ImageDescription $isVisible={isHovered}>

@@ -53,12 +53,12 @@ export const VideoCaption = styled.div`
   max-width: 1200px;
 
   p {
-    margin: 10px 0;
+    // margin: 10px 0;
     line-height: 1.5;
   }
 
   h3 {
-    margin: 20px 0;
+    // margin: 20px 0;
     font-size: 1.5rem;
   }
 `;
