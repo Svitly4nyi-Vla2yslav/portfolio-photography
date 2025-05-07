@@ -25,7 +25,6 @@ export const HomeWrapperDetails = styled.div`
      margin: 0 auto;
 `;
 
-
 export const HomeTitel = styled.div`
 display: flex;
 width: 100%;
