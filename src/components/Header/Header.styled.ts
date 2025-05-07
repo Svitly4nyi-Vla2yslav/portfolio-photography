@@ -5,10 +5,7 @@ export const NavbarContainer = styled.header<{ $isScrolled: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-   background: ${({ $isScrolled }) =>
-    $isScrolled ? 'rgb(0, 0, 0)' : 'transparent'};
-  box-shadow: ${({ $isScrolled }) =>
-    $isScrolled ? '0 4px 15px rgba(0, 0, 0, 0)' : 'none'};
+   background: rgb(0, 0, 0);
   padding: 1rem 2rem;
   position: fixed;
   top: 0;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Modal from '../Modal/Modal';
+import Modal, { CloseButton, MediaContainer, TextContainer } from '../Modal/Modal';
 import Loading from '../../assets/video/logo_animated_hq.webm';
 import {
   CollectionContainer,
@@ -72,17 +72,17 @@ export interface CollectionData {
   work_title?: string;
 
   // Vimeo video IDs (if available)
-  vimeo_id?: string;
-  vimeo_id1?: string;
-  vimeo_id2?: string;
-  vimeo_id3?: string;
-  vimeo_id4?: string;
-  vimeo_id5?: string;
-  vimeo_id6?: string;
-  vimeo_id7?: string;
-  vimeo_id8?: string;
-  vimeo_id9?: string;
-  vimeo_id41?: string;
+  // vimeo_id?: string;
+  // vimeo_id1?: string;
+  // vimeo_id2?: string;
+  // vimeo_id3?: string;
+  // vimeo_id4?: string;
+  // vimeo_id5?: string;
+  // vimeo_id6?: string;
+  // vimeo_id7?: string;
+  // vimeo_id8?: string;
+  // vimeo_id9?: string;
+  // vimeo_id41?: string;
 }
 
 export interface CollectionComponentProps {
@@ -435,7 +435,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
         <VimeoVideoContainer>
           {vimeoId ? (
             <iframe
-              src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&loop=0&title=0&byline=0&portrait=0`}
+            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&loop=0&title=0&byline=0&portrait=0&controls=1&share=1`}
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
             />
@@ -510,6 +510,8 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
         <CollectionDescription>{collection.description}</CollectionDescription>
       </CollectionTextWrapper>
 
+{/* Блок 2 / 3 картинки */}
+
       <CollectionGrid
         $itemsCount={
           [
@@ -534,6 +536,8 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             )
           )}
       </CollectionGrid>
+{/* Блок картинка / текст */}
+
       {collection.image_name4 &&
         collection.title1 &&
         !isMediaFailed(collection.image_name4) && (
@@ -551,7 +555,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             </TextBlock>
           </CollectionBlock>
         )}
-
+{/* Блок картинка / текст */}
       {collection.image_name41 &&
         collection.title11 &&
         !isMediaFailed(collection.image_name41) && (
@@ -571,6 +575,8 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             </ImageBlock>
           </CollectionBlock>
         )}
+
+{/* Блок 5 / 2 картинок */}
       <CollectionImageWrapper>
         {[5, 6, 7, 8, 9].map(num => {
           const media = collection[
@@ -586,79 +592,48 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             : null;
         })}
       </CollectionImageWrapper>
+
       {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            <button
-              onClick={closeModal}
-              style={{
-                position: 'fixed',
-                top: '10px',
-                right: '10px',
-                background: 'transparent',
-                border: 'none',
-                fontSize: '40px',
-                cursor: 'pointer',
-                color: '#999',
-                zIndex: 100,
-              }}
-            >
-              ✖
-            </button>
-
-            {currentMedia.type === 'image' ? (
-              <img
-                src={currentMedia.url}
-                alt={currentMedia.altText}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '80vh',
-                  objectFit: 'contain',
-                  marginBottom: '20px',
-                }}
-              />
-            ) : currentMedia.vimeoId ? (
-              <VimeoContainer ref={vimeoContainerRef} />
-            ) : (
-              <video
-                src={currentMedia.url}
-                controls
-                autoPlay
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '80vh',
-                  objectFit: 'contain',
-                  marginBottom: '20px',
-                }}
-              />
-            )}
-
-            <div
-              style={{
-                color: '#fff',
-                textAlign: 'center',
-                padding: '0 0px',
-                width: '100%',
-              }}
-            >
-              {currentMedia.description && (
-                <p style={{}}>{currentMedia.description}</p>
-              )}
-              {collection.work_title && (
-                <h3 style={{ marginBottom: 110 }}>{collection.work_title}</h3>
-              )}
-            </div>
-          </div>
-        </Modal>
+  <Modal onClose={closeModal}>
+    <CloseButton onClick={closeModal}>✖</CloseButton>
+    
+    <MediaContainer>
+      {currentMedia.type === 'image' ? (
+        <img
+          src={currentMedia.url}
+          alt={currentMedia.altText}
+          style={{
+            maxWidth: '100%',
+            maxHeight: '100%',
+            objectFit: 'contain',
+          }}
+        />
+      ) : currentMedia.vimeoId ? (
+        <VimeoContainer ref={vimeoContainerRef} />
+      ) : (
+        <video
+          src={currentMedia.url}
+          controls
+          autoPlay
+          style={{
+            maxWidth: '100%',
+            maxHeight: '70vh',
+            objectFit: 'contain',
+          }}
+        />
       )}
+    </MediaContainer>
+
+    <TextContainer>
+      {currentMedia.description && (
+        <p>{currentMedia.description}</p>
+      )}
+      {collection.work_title && (
+        <h3>{collection.work_title}</h3>
+      )}
+    </TextContainer>
+  </Modal>
+)}
     </CollectionContainer>
   );
 };

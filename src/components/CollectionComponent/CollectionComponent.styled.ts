@@ -25,17 +25,24 @@ export const PlayerVimeo = styled.div`
 
 export const VimeoVideoContainer = styled.div`
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
+  padding-bottom: 55.125%;
   overflow: hidden;
-background-size: cover;
-  iframe, video {
-      position: absolute;
-    top: -30%; /* Компенсуємо зменшення висоти */
+  
+  iframe {
+    position: absolute;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 100%; /* Збільшуємо висоту iframe */
-    border: none;
+    height: 200%; /* Компенсуємо зменшену висоту */
+    transform: translateY(-25%); /* Центруємо */
+
+.player.player-xxl .ControlBar_module_controlBarWrapper__293a16b4  {
+    bottom: 34.6em; !important; /* Піднімаємо вище */
+    left: 1.6em;
+    right: 1.6em;
+    height: 4em;
+    transform: translateY(-10px); /* Додаткове підняття */
+}
   }
 
   video {
@@ -47,7 +54,8 @@ background-size: cover;
 export const VideoCaption = styled.div`
   color: #fff;
   text-align: center;
-  // padding: 20px 5%;
+  padding: 0px 5%;
+  padding-top: 20px;
   width: 90%;
   margin: 0 auto;
   max-width: 1200px;
