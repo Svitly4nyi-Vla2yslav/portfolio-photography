@@ -19,16 +19,21 @@ max-width: 100%;
 export const PlayerVimeo = styled.div`
   width: 100%;
   margin: 0 auto;
-  position: relative;
   background: #000;
+
+  position: relative;
 `;
 
 export const VimeoVideoContainer = styled.div`
   position: relative;
-  padding-bottom: 55.125%;
+  padding-bottom: 56.125%;
   overflow: hidden;
+  background: #000;
+
   
   iframe {
+  background: #000;
+
     position: absolute;
     top: 0;
     left: 0;
@@ -36,13 +41,7 @@ export const VimeoVideoContainer = styled.div`
     height: 200%; /* Компенсуємо зменшену висоту */
     transform: translateY(-25%); /* Центруємо */
 
-.player.player-xxl .ControlBar_module_controlBarWrapper__293a16b4  {
-    bottom: 34.6em; !important; /* Піднімаємо вище */
-    left: 1.6em;
-    right: 1.6em;
-    height: 4em;
-    transform: translateY(-10px); /* Додаткове підняття */
-}
+
   }
 
   video {
@@ -77,8 +76,12 @@ export const VimeoContainer = styled.div`
   height: 0;
   padding-bottom: 56.25%;
   position: relative;
+  background: #000;
+
 
   iframe {
+  background: #000;
+
     position: absolute;
     top: -10%;
     left: 0;

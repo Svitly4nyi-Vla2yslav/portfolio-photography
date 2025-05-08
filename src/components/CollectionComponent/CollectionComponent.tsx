@@ -438,6 +438,7 @@ const CollectionComponent: React.FC<CollectionComponentProps> = ({
             src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&loop=0&title=0&byline=0&portrait=0&controls=1&share=1`}
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
+                frameBorder="0"
             />
           ) : (
             <video src={url} controls />
